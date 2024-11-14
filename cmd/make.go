@@ -24,40 +24,54 @@ var makeCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		//TODO Right now there are no optional params and so the only param currently is title. Fix this? Pointer trick from Jake?
 		makeDocument(args[0])
+
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(makeCmd)
+	// rootCmd.AddCommand(makeCmd)
 
 }
 
 func makeDocument(Title string) utils.Document {
 
+	Location := filepath.Dir(Title)
+	if Location == "." {
+		var err error
+		Location, err = os.Getwd()
+		if err != nil {
+			fmt.Printf("Cannot retrieve file location: %v\n", err)
+		}
+	}
+	// Create a doc struct
 	newDocument := utils.Document{
 		UUID:        uuid.NewString(),
 		Title:       filepath.Base(Title),
 		Extension:   filepath.Ext(Title),
-		Location:    filepath.Dir(Title),
+		Location:    Location,
 		CreatedDate: time.Now().Format("2006-01-02"),
 	}
 
-	docStruct, err := os.Create(newDocument.Title)
+	// Create a file using on the struct
+	docStructFile, err := os.Create(newDocument.Title)
 	if err != nil {
 		fmt.Printf("Error creating file: %v\n", err)
 	}
-	defer docStruct.Close()
+	defer docStructFile.Close()
 
+	// Convert the struct into Json
 	docJson, err := json.MarshalIndent(newDocument, "", "\t")
 	if err != nil {
 		fmt.Printf("Error marshalling struct: %v\n", err)
 	}
 
+	// Open the Json file
 	globalJson, err := os.OpenFile("data/global.json", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// write the struct turned json to global.json
 	if _, err := globalJson.Write([]byte(docJson)); err != nil {
 		globalJson.Close()
 		log.Fatal(err)

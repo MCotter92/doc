@@ -10,6 +10,11 @@
 ## Doc track 
 - Add a document to doc’s tracking
 - When a document is deleted, should doc automatically delete that metadata out of the json? 
+- How do I tackle this? 
+  - Well so it would look like "doc track path/to/doc.md", doc would parse out the necessary info for title, location.
+  Need to make sure that today's day isn't being automatically populated, and the user can add keywords if they want. 
+  - Lots of overlap with "doc make"" here... 
+  - Interfaces??
 ## Doc make (In prog) 
 - Makes a new document. 
   - Add the option to implement tracking now. Optional params? 
@@ -19,18 +24,7 @@
 ## Metadata stored in JSON 
 - Individual files - slightly more space 
 - State files - slower to query 
-Will probably end up with both
-Storing these in a document database that ships with doc 
-This becomes the parent json 
-Can query entire set of metadata files to get what i want 
-By tag, date, keyword etc 
-One for each child namespace 
-Global namespace that manages everything 
-This namespace knows where docs are to limit search 
-Can add, delete, or update a namespace for each child location 
-Knows what tags, subtags exist 
 
-Go 
 Go interfaces are weird
 Relationships aren’t like “this has that” more like “this does that” 
 
