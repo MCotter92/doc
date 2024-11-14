@@ -33,4 +33,11 @@
 	"Location": ".",
 	"CreatedDate": "2024-11-12",
 	"Keywords": null
+}{
+	"UUID": "c20d8c16-6daa-4246-b93d-66514f7fa3c2",
+	"Title": "test8.txt",
+	"Extension": ".txt",
+	"Location": "/Users/mason_cotter/dev/doc",
+	"CreatedDate": "2024-11-14",
+	"Keywords": null
 }

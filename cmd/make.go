@@ -6,6 +6,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/djherbis/times"
 	"log"
 	"os"
 	"path/filepath"
@@ -29,7 +30,7 @@ var makeCmd = &cobra.Command{
 }
 
 func init() {
-	// rootCmd.AddCommand(makeCmd)
+	rootCmd.AddCommand(makeCmd)
 
 }
 
@@ -43,13 +44,19 @@ func makeDocument(Title string) utils.Document {
 			fmt.Printf("Cannot retrieve file location: %v\n", err)
 		}
 	}
-	// Create a doc struct
+
+	times, err := times.Stat(Title)
+	if err != nil {
+		fmt.Printf("Cannot retrieve file times: %v\n", err)
+	}
+
 	newDocument := utils.Document{
-		UUID:        uuid.NewString(),
-		Title:       filepath.Base(Title),
-		Extension:   filepath.Ext(Title),
-		Location:    Location,
-		CreatedDate: time.Now().Format("2006-01-02"),
+		UUID:             uuid.NewString(),
+		Title:            filepath.Base(Title),
+		Extension:        filepath.Ext(Title),
+		Location:         Location,
+		CreatedDate:      times.BirthTime(),
+		LastModifiedDate: times.ChangeTime(),
 	}
 
 	// Create a file using on the struct
