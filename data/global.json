@@ -1,43 +1,6 @@
 {
-	"UUID": "adf1cb8e-40d8-4428-b2e3-59daea3df2cd",
-	"Title": "test3.txt",
-	"Extension": ".txt",
-	"Location": ".",
-	"CreatedDate": "2024-11-10",
-	"Keywords": null
-}{
-	"UUID": "58f8b4ac-476e-4577-8967-8ff5bae7764c",
-	"Title": "test4.txt",
-	"Extension": ".txt",
-	"Location": ".",
-	"CreatedDate": "2024-11-10",
-	"Keywords": null
-}{
-	"UUID": "0a853178-74eb-431a-ad74-addc8625313f",
-	"Title": ".",
-	"Extension": "",
-	"Location": ".",
-	"CreatedDate": "2024-11-12",
-	"Keywords": null
-}{
-	"UUID": "ebfc86e7-f4c1-42d6-9e32-e28737d1c959",
-	"Title": "test6.txt",
-	"Extension": ".txt",
-	"Location": ".",
-	"CreatedDate": "2024-11-12",
-	"Keywords": null
-}{
-	"UUID": "29a338e9-cf97-4977-9cf4-54c36a9c0173",
-	"Title": "test7.txt",
-	"Extension": ".txt",
-	"Location": ".",
-	"CreatedDate": "2024-11-12",
-	"Keywords": null
-}{
-	"UUID": "c20d8c16-6daa-4246-b93d-66514f7fa3c2",
-	"Title": "test8.txt",
-	"Extension": ".txt",
-	"Location": "/Users/mason_cotter/dev/doc",
-	"CreatedDate": "2024-11-14",
-	"Keywords": null
+  "docs":[
+    
+  ]
 }
+

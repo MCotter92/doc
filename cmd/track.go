@@ -5,12 +5,12 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/MCotter92/doc/utils"
-	"github.com/djherbis/times"
-	"github.com/google/uuid"
+	// "github.com/MCotter92/doc/utils"
+	// "github.com/djherbis/times"
+	// "github.com/google/uuid"
 	"github.com/spf13/cobra"
-	"os"
-	"path/filepath"
+	// "os"
+	// "path/filepath"
 )
 
 // trackCmd represents the track command
@@ -33,51 +33,41 @@ func init() {
 
 }
 
-func trackDocument(document string) utils.Document {
-	//TODO trackDocument takes in a string and checks if the string represents a document or a directory. If it is a directroy doc should
-	//ask the user if they want to track everything in the repository or not. If yes, track all documents in that directory.
-
-	//TODO add a flag -r that runs this recursively so that it trackes everything below the cwd including nested dirs and stuff.
-
-	Location := filepath.Dir(document)
-	if Location == "." {
-		var err error
-		Location, err = os.Getwd()
-		if err != nil {
-			fmt.Printf("Cannot retrieve file location: %v\n", err)
-		}
-	}
-
-	times, err := times.Stat(document)
-	if err != nil {
-		fmt.Printf("Cannot retrieve file times: %v\n", err)
-	}
-
-	info, err := os.Stat(document)
-	if err != nil {
-		fmt.Printf("Cannot retrieve file stats: %v\n (y/n)", err)
-	}
-	if info.IsDir() {
-		var userInput string
-		fmt.Print("Do you want doc to track all files within %v?", document)
-		fmt.Scanln(&userInput)
-		if userInput == "y" || userInput == "Y" {
-			// TODO walk the directory and convert each FILE to my struct then add to global.json
-		} else {
-			fmt.Println("doc track cancelled.")
-		}
-	}
-
-	// Create a doc struct
-	newDocument := utils.Document{
-		UUID:             uuid.NewString(),
-		Title:            filepath.Base(document),
-		Extension:        filepath.Ext(document),
-		Location:         Location,
-		CreatedDate:      times.BirthTime(),
-		LastModifiedDate: times.ChangeTime(),
-	}
-
-	return newDocument
-
-}
+// func trackDocument(item string) utils.Document {
+// 	//TODO trackDocument takes in a string and checks if the string represents a document or a directory. If it is a directroy doc should
+// 	//ask the user if they want to track everything in the repository or not. If yes, track all documents in that directory.
+//
+// 	//TODO add a flag -r that runs this recursively so that it trackes everything below the cwd including nested dirs and stuff.
+//
+// 	Location := filepath.Dir(item)
+// 	if Location == "." {
+// 		var err error
+// 		Location, err = os.Getwd()
+// 		if err != nil {
+// 			fmt.Printf("Cannot retrieve file location: %v\n", err)
+// 		}
+// 	}
+//
+// 	info, err := os.Stat(item)
+// 	if err != nil {
+// 		fmt.Printf("Cannot retrieve file stats: %v\n (y/n)", err)
+// 	}
+//
+// 	// if info.IsDir() {
+// 	// 	var userInput string
+// 	// 	fmt.Print("Do you want doc to track all files within %v?", item)
+// 	// 	fmt.Scanln(&userInput)
+// 	// 	if userInput == "y" || userInput == "Y" {
+// 	// 		filepath.WalkDir(item, makeDocument())
+// 	// 		// TODO walk the directory and convert each FILE to my struct then add to global.json.
+// 	// 		// Need to refactor the tracking functionality to utils?
+// 	//
+// 	// 	} else {
+// 	// 		fmt.Println("doc track cancelled.")
+// 	// 	}
+// 	// }
+// 	//
+// 	// // Create a doc struct
+// 	// return newDocument
+//
+// }
