@@ -1,11 +1,17 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
-*/
 package main
 
-import "github.com/MCotter92/doc/cmd"
+import (
+	// "fmt"
+	// "os"
+	"github.com/MCotter92/doc/cmd"
+	// "fmt"
+	// "os"
+	// "path/filepath"
+)
+
 
 func main() {
-	cmd.Execute()
+
+    cmd.Execute()
 }
+

@@ -1,17 +1,23 @@
 package utils
 
-import "time"
+import (
+	"time"
 
-type DocumentStore struct {
-	UUID             string    `json:"uuid"`
-	CreatedDate      time.Time `json:"CreatedDate"`
-	LastModifiedDate time.Time `json:"LastModifiedDate"`
-	Keywords         []string  `json:"Keywords"`
-	Document         Document  `json:"Document"`
-}
+	"github.com/google/uuid"
+)
 
 type Document struct {
-	Title     string `json:"Title"`
-	Extension string `json:"Extension"`
-	Location  string `json:"Location"`
+    Id               uuid.UUID `json:"id"`
+    Title            string    `json:"title"`
+    Extension        string    `json:"extension"`
+    Location         string    `json:"location"`
+    CreatedDate      time.Time `json:"createdDate"`
+    LastModifiedDate time.Time `json:"lastModifiedDate"`
+    Keyword          string  `json:"keyword"`
+}
+
+type DocumentStore struct {
+	Id        uuid.UUID  `json:"id"`
+	Name      string     `json:"name"`
+	Documents []Document `json:"documents"`
 }
