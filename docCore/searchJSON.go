@@ -10,7 +10,7 @@ import (
 )
 
 func Search(id, title, extension, location, createdDate, lastModifiedDate, keyword string) {
-    globalData, err := os.ReadFile("data/global.json")
+    globalData, err := os.ReadFile("~/dev/doc/data/global.json")
     if err != nil {
         fmt.Println("Cannot read global.json", err)
         return
@@ -52,10 +52,7 @@ func Search(id, title, extension, location, createdDate, lastModifiedDate, keywo
             continue
         }
 
-        fmt.Println(doc)
+        fmt.Println("what...")
 
     }
-
-
-
 }

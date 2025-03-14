@@ -17,7 +17,7 @@ func TrackDocument(fileName ,keyword string)  {
 
         
     // read data/global.json for use 
-    globalData, err := os.ReadFile("data/global.json")
+    globalData, err := os.ReadFile("~/dev/doc/data/global.json")
     if err != nil {
         fmt.Println("Cannot read global.json", err)
     }
@@ -62,9 +62,9 @@ func TrackDocument(fileName ,keyword string)  {
         fmt.Println("Cannot marshal store", err)
     }
 
-    err  = os.WriteFile("data/global.json", b, 0644)
+    err  = os.WriteFile("~/dev/doc/data/global.json", b, 0644)
     if err != nil {
-        fmt.Println("Cannot write to data/global.json", err)
+        fmt.Println("Cannot write to ~/dev/doc/data/global.json", err)
     }
 
 }

@@ -32,11 +32,11 @@ var searchCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(searchCmd)
 
-    searchCmd.Flags().StringVar(&id, "id", "", "Search doc by keyword.")
-    searchCmd.Flags().StringVar(&title, "title", "", "Search doc by title.")
-    searchCmd.Flags().StringVar(&extension, "exension", "", "Search doc by extension.")
+    // searchCmd.Flags().StringVar(&id, "id", "", "Search doc by keyword.")
+    // searchCmd.Flags().StringVar(&title, "title", "", "Search doc by title.")
+    // searchCmd.Flags().StringVar(&extension, "exension", "", "Search doc by extension.")
     searchCmd.Flags().StringVar(&location, "location", "", "Search doc by location.")
-    searchCmd.Flags().StringVar(&createdDate, "createdDate", "", "Search doc by created date.")
-    searchCmd.Flags().StringVar(&lastModifiedDate, "lastModifiedDate", "", "Search doc by last modified date.")
-    searchCmd.Flags().StringVar(&keyword, "keyword", "", "Search doc by keyword.")
+    // searchCmd.Flags().StringVar(&createdDate, "createdDate", "", "Search doc by created date.")
+    // searchCmd.Flags().StringVar(&lastModifiedDate, "lastModifiedDate", "", "Search doc by last modified date.")
+    // searchCmd.Flags().StringVar(&keyword, "keyword", "", "Search doc by keyword.")
 }
