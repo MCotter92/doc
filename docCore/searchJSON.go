@@ -9,20 +9,19 @@ import (
 	"github.com/MCotter92/doc/utils"
 )
 
-func Search(id, title, extension, location, createdDate, lastModifiedDate, keyword string) {
-    globalData, err := os.ReadFile("~/dev/doc/data/global.json")
+func Search(id, title, extension, location, createdDate,  keyword string) []string{
+    globalData, err := os.ReadFile("data/global.json")
     if err != nil {
         fmt.Println("Cannot read global.json", err)
-        return
     }
 
     var store utils.DocumentStore
     err = json.Unmarshal(globalData, &store)
     if err != nil {
         fmt.Println("Cannon unmarshal globalData", err)
-        return
     }
 
+    var docs []string
     for _, doc := range store.Documents {
         if id != "" && doc.Id.String() != id {
             continue
@@ -44,15 +43,15 @@ func Search(id, title, extension, location, createdDate, lastModifiedDate, keywo
             continue
         }
 
-        if lastModifiedDate != "" && doc.LastModifiedDate.String() != createdDate {
-            continue
-        }
 
         if keyword != "" && !strings.Contains(doc.Keyword, keyword) {
             continue
         }
 
-        fmt.Println("what...")
+        docs = append(docs, doc.Location)
 
     }
+
+    return docs
+    
 }

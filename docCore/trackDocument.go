@@ -5,19 +5,17 @@ import
 	"encoding/json"
 	"fmt"
 	"os"
-	"time"
-	"path/filepath"
+	
 
 	"github.com/MCotter92/doc/utils"
-	"github.com/google/uuid"
 )
 
 
-func TrackDocument(fileName ,keyword string)  {
+func TrackDocument(title, keyword string)  {
 
         
     // read data/global.json for use 
-    globalData, err := os.ReadFile("~/dev/doc/data/global.json")
+    globalData, err := os.ReadFile("data/global.json")
     if err != nil {
         fmt.Println("Cannot read global.json", err)
     }
@@ -29,40 +27,26 @@ func TrackDocument(fileName ,keyword string)  {
         fmt.Println("Cannot unmarshal globalData", err)
     }
 
-    loc := filepath.Dir(fileName)
-    if loc == "."{
-        _loc, err := os.Getwd()
-        if err != nil {
-            fmt.Printf("Cannot retrieve file location: %v\n", err)
-        }
-        loc = _loc
-    }
-
-    stats,_:=os.Stat(fileName)
-
-    ext := filepath.Ext(fileName)
-    id := uuid.New()
-
     // fill out child struct
-    d := utils.Document{
-        Id:               id,
-        Title:            stats.Name(),
-        Extension:        ext,
-        Location:         loc,
-        CreatedDate:      time.Now(),
-        LastModifiedDate: stats.ModTime(),
-        Keyword:         keyword,
-        
-    }
+    pDoc := &utils.Document{}
+    pDoc.SetID()
+    pDoc.SetTitle(title)
+    pDoc.SetExtension(title)
+    pDoc.SetLocation(title)
+    pDoc.SetCreatedDate()
+    pDoc.SetKeyword(keyword)
 
-    store.Documents = append(store.Documents, d)
+    // append new child struct to docs list in parent struct
+    store.Documents = append(store.Documents, *pDoc)
 
+    // marshal parent struct into json
     b, err := json.MarshalIndent(store, "", " ")
     if err != nil {
         fmt.Println("Cannot marshal store", err)
     }
 
-    err  = os.WriteFile("~/dev/doc/data/global.json", b, 0644)
+    // write parent struct to global.json 
+    err  = os.WriteFile("data/global.json", b, 0644)
     if err != nil {
         fmt.Println("Cannot write to ~/dev/doc/data/global.json", err)
     }

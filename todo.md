@@ -11,12 +11,10 @@
     [x] make sure last modified date is actually last modified date
     [x] make sure location has a control flow for if a document is not in current working directory. Need to parse string input from user for that if not "."
 [x] change input to this: doc search --title filename.md --keyword poop dumb --date mm/dd/yyyy
-[] implement tview
-[] Explore the implications of swapping out json with sqlite
-    - https://medium.com/@peymaan.abedinpour/golang-crud-app-tutorial-step-by-step-guide-using-sqlite-a3ce08a4fc81
-    - https://github.com/mattn/go-sqlite3
-[] implement event listener 
-    - event listener should do the following: 
+[x] finish untrack document
+[] refactor to implement factory design pattern. I want to make sure I'm using interfaces effectively.
+[] implement event listener or an audit function that the user manually calls. 
+    - either way it should do the following: 
         - update file structs dynamically 
         - delete files removed by user with rm 
 [] look into how to hash file contents into json
