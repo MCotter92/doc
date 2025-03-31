@@ -12,7 +12,7 @@ func Untrack(id, title, extension, location, createdDate,  keyword string) {
     // unmarshal global.json
 
     var userInput string
-    fmt.Println("Would you like to delete the document as well as untrack it?")
+    fmt.Println("Would you like to delete the document as well as untrack it? (y/n)")
     fmt.Scanln(&userInput)
 
     globalData, err := os.ReadFile("data/global.json")
