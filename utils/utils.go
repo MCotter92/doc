@@ -22,36 +22,11 @@ type Document struct {
 }
 
 type DocumentStore struct {
-	Id        uuid.UUID  `json:"id"`
-	Name      string     `json:"name"`
-	Documents []Document `json:"documents"`
+	Id            uuid.UUID `json:"id"`
+	Name          string    `json:"name"`
+	NotesLocation string
 }
 
-//	type iDoc interface {
-//	    setID()
-//	    getID()
-//	    setTitle()
-//	    getTitle()
-//	    setExtension()
-//	    getExtension()
-//	    setLocation()
-//	    getLocation()
-//	    setFullName()
-//	    getFullName()
-//	    setInode()
-//	    getInode()
-//	    setCreatedDate()
-//	    getCreatedDate()
-//	    setLastModifiedDate()
-//	    getLastModifiedDate()
-//	    setKeyword()
-//	    getKeyword()
-//	}
-//
-//	type iStore interface {
-//	    unmarshalJson()
-//	    marshalJson()
-//	}
 func (d *Document) SetID() {
 	d.Id = uuid.New()
 }
