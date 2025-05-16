@@ -4,14 +4,19 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/MCotter92/doc/utils"
 	"github.com/spf13/cobra"
 )
 
-// trackCmd represents the track command
-var trackCmd = &cobra.Command{
-	Use:   "track",
+var (
+	name          string
+	editor        string
+	notesLocation string
+)
+
+// newUserTablemcd represents the newUserTable command
+var CreateUsercmd = &cobra.Command{
+	Use:   "CreateUser",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -20,20 +25,25 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("track called")
+		user := utils.User{}
+		user.CreateUser(name, notesLocation, editor)
+
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(trackCmd)
+	rootCmd.AddCommand(CreateUsercmd)
 
+	CreateUsercmd.Flags().StringVar(&name, "name", "", "Set the user's name.")
+	CreateUsercmd.Flags().StringVar(&editor, "editor", "", "Set the user's prefered editor.")
+	CreateUsercmd.Flags().StringVar(&notesLocation, "notesLocation", "", "Set the user's prefered notes location.")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// trackCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// newUserTablemcd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// trackCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// newUserTablemcd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

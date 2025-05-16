@@ -1,22 +1,19 @@
 package docCore
 
-import (
-	"database/sql"
-	"github.com/MCotter92/doc/utils"
-	_ "github.com/mattn/go-sqlite3"
-)
-
-func TrackDocument(db *sql.DB, title, keyword string) {
-
-	// fill out child struct
-	pDoc := &utils.Document{}
-	pDoc.SetID()
-	pDoc.SetTitle(title)
-	pDoc.SetExtension(title)
-	pDoc.SetLocation(title)
-	pDoc.SetFullName()
-	pDoc.SetInode()
-	pDoc.SetCreatedDate()
-	pDoc.SetKeyword(keyword)
-
-}
+// import (
+// 	"database/sql"
+// 	"fmt"
+//
+// 	_ "github.com/mattn/go-sqlite3"
+// )
+//
+// func TrackDocument(db *sql.DB, title, keyword string) {
+//
+//
+// 	usersDB := "Users.db"
+// 	db, err := sql.Open("go-sqlite3", usersDB)
+// 	if err != nil {
+// 		fmt.Printf("cannot init %v handle: %v\n", db, err)
+// 	}
+//
+// }

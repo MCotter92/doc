@@ -15,7 +15,6 @@ func Search(id, title, extension, location, createdDate, keyword string) []strin
 		fmt.Println("Cannot read global.json", err)
 	}
 
-	var store utils.DocumentStore
 	err = json.Unmarshal(globalData, &store)
 	if err != nil {
 		fmt.Println("Cannon unmarshal globalData", err)

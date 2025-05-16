@@ -20,19 +20,34 @@
     [x] change input to this: doc search --title filename.md --keyword poop dumb --date mm/dd/yyyy
     [x] finish untrack document
     [x] refactor to implement factory design pattern. I want to make sure I'm using interfaces effectively.
-    [] wrap in a rest api
-        - python package fastapi
-        - is there an equivelent for go? 
-        - look into insomnia rest application version prior to 8
+    [] apply frontmatter
     [] apply mysql or sqlite
         - mysql workbench for my sql database 
             - start with tables for users and files
+                - a user has many files
     [] implement a user profile 
         - should have the following
             [] editor of choice
             [] determin a notes folder to watch 
+    [] wrap in a rest api
+        - python package fastapi
+        - is there an equivelent for go? 
+        - look into insomnia rest application version prior to 8
     [] implement tags by reading the file and looking for words surrounded by something (maybe __tag__)
     [] create a flag for cmd/track to track everything in a directory
     [] figure out how to add doc to my path and store the code somewhere other than dev like other programs.
         - give command to add to path, leave it up to them to run it. They can change that func as needed if they want. 
     [] look into test coverage
+
+### May 6, 2025
+    [] rethink if i really need the documents and docuemntsstore struct. I might be able to trim a lot of this down now
+        - structs that contain pointes to their respective databases and methods on those structs for create, instert, blah blah blah
+    [] change profile logic to reflect the init of a User record
+
+### May 5, 2025 
+    [x] create Users table
+        - id 
+        - Name
+        - notesLocation 
+        - editor
+    [x] create Files table such that one user has many files
