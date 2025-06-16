@@ -1,2 +1,2 @@
 # doc
-A CLI for organizing your documents.
+A CLI for organizing your documents inspired by Obsidian.

@@ -1,53 +1,36 @@
 # future features 
 
 ## Doc core functionality
-    [x] track a document 
-    [x] create a document and track it
-    [x] untrack and document
-    [x] untrack and document and delete it
-    [x] search for doucments based on metadata
-    [] automatically update metadata if user updates the metadata outise of doc 
-
-### overall ideas
-    - have event tracker handle rm and whatnot and also have explicit commands   
-        - if i delete a file with rm, but that file is still in doc's state, when i run doc it will recreate that file
-            - if i hash the contents into the json it will return the contents too 
+    [] the user specifies a folder for notes (like vaults for obsidian)
+    [] the user applies metadata to a file with frontmatter (tags have the option to be inline and notated with [[tag]])
+    [] the metadata is collected by a database and stored
+    [] the user can then search the database to find files
+    [] things are automatically updated if the user makes a change to the metadata or moves a file
 
 ### todo list 
-    - Struct population 
-        [x] make sure last modified date is actually last modified date
-        [x] make sure location has a control flow for if a document is not in current working directory. Need to parse string input from user for that if not "."
-    [x] change input to this: doc search --title filename.md --keyword poop dumb --date mm/dd/yyyy
-    [x] finish untrack document
-    [x] refactor to implement factory design pattern. I want to make sure I'm using interfaces effectively.
-    [] apply frontmatter
-    [] apply mysql or sqlite
-        - mysql workbench for my sql database 
-            - start with tables for users and files
-                - a user has many files
-    [] implement a user profile 
+    [x] implement a doc init command that applies a .doc folder with a yaml file inside for user config
+    [x] implement yaml config file
         - should have the following
-            [] editor of choice
-            [] determin a notes folder to watch 
+            [x] editor of choice
+            [x] determin a notes folder to watch 
+    [x] implement a doc config command that cats out the user's config file
+    [x] reorganize utils 
+    [] apply frontmatter parsing
+    [] implement core functionality 
+        - create 
+        - search 
+        - delete 
+        - update 
+        - sync
+    [] implement file syncing with database
+    [] implement file watcher
+        - thoughts on this file watcher. I think the only directory level watching would be if they moved thier notes folder. 
+        - For file watching, I would want to watch for changes to the frontmatter on each file. 
+        - If the user changes the keyword for a file, the file watcher triggers a sql query that updates the database accordingly.
+        - I imagine the hard part will be updating the database, not having the file watcher shoot up a flair.
+        - Maybe I can have a watcher spin up via a goroutine when a file in the notes directory is opened? And when the user saves, that goroutine also compares the current frontmatter to that file's entry in the database? If they are different, reconcile.  
     [] wrap in a rest api
         - python package fastapi
-        - is there an equivelent for go? 
         - look into insomnia rest application version prior to 8
-    [] implement tags by reading the file and looking for words surrounded by something (maybe __tag__)
-    [] create a flag for cmd/track to track everything in a directory
-    [] figure out how to add doc to my path and store the code somewhere other than dev like other programs.
-        - give command to add to path, leave it up to them to run it. They can change that func as needed if they want. 
+            - is there an equivelent for go? 
     [] look into test coverage
-
-### May 6, 2025
-    [] rethink if i really need the documents and docuemntsstore struct. I might be able to trim a lot of this down now
-        - structs that contain pointes to their respective databases and methods on those structs for create, instert, blah blah blah
-    [] change profile logic to reflect the init of a User record
-
-### May 5, 2025 
-    [x] create Users table
-        - id 
-        - Name
-        - notesLocation 
-        - editor
-    [x] create Files table such that one user has many files
