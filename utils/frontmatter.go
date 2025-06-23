@@ -21,4 +21,4 @@ func SetFrontmatter(note *Note) string {
 }
 
 // TODO: finish this
-// func ParseFrontmatter(filePath string) (FrontMatter, error)
+// func ParseFrontmatter(filePath string) (Note, error)

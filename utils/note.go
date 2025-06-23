@@ -1,11 +1,13 @@
 package utils
 
 import (
+	"database/sql"
 	"fmt"
-	"github.com/google/uuid"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Note struct {
@@ -19,9 +21,9 @@ type Note struct {
 }
 
 // TODO: Finish these
-// func SyncNoteWithDB(db *Database, filePath string, frontmatter FrontMatter) error
 
 func CreateNoteFile(title, keyword string) error {
+
 	note, err := NewNote(title, keyword)
 	if err != nil {
 		return fmt.Errorf("Could not create note: %w", err)
@@ -36,13 +38,13 @@ func CreateNoteFile(title, keyword string) error {
 	}
 
 	return nil
-
 }
+
 func NewNote(title, keyword string) (*Note, error) {
 	doc := &Note{}
 
 	doc.setID()
-	// get user_id from users table
+	doc.setUserID()
 	if err := doc.setTitle(title); err != nil {
 		return nil, err
 	}
@@ -65,12 +67,32 @@ func (n *Note) GetID() uuid.UUID {
 	return n.Id
 }
 
-func (n *Note) setTitle(fileName string) error {
-	stats, err := os.Stat(fileName)
+func (n *Note) setUserID() error {
+	homeDir, _ := os.UserHomeDir()
+	dbPath := filepath.Join(homeDir, ".config/doc/doc.db")
+
+	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return err
 	}
-	n.Title = stats.Name()
+	var userID string
+	query := `SELECT id FROM user LIMIT 1`
+	err = db.QueryRow(query).Scan(&userID)
+	if err != nil {
+		return err
+	}
+	parsedUUDI, err := uuid.Parse(userID)
+	if err != nil {
+		return err
+	}
+
+	n.User_id = parsedUUDI
+	return nil
+
+}
+
+func (n *Note) setTitle(fileName string) error {
+	n.Title = filepath.Base(fileName)
 	return nil
 }
 

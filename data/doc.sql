@@ -12,10 +12,8 @@ CREATE TABLE IF NOT EXISTS documents (
     title TEXT,
     extension TEXT,
     location TEXT,
-    full_name TEXT,
     created_date TEXT, -- ISO 8601 format (used for date/time)
     keyword TEXT,
-    inode INTEGER,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -17,7 +18,32 @@ type Database struct {
 // TODO: finish these
 // func (db *Database) UpdateNote(noteID int, title, content string) error
 // func (db *Database) GetNoteByPath(filePath string) (*Note, error)
-// func (db *Database) InsertNote(userID int, title, content string) (int64, error)
+// func SyncNoteWithDB(db *Database, filePath, frontmatter string) error
+
+// TODO: InserNote isn't getting past  db.Exec
+func InsertNote(db *sql.DB, note *Note) error {
+	fmt.Printf("DEBUG: InsertNote started\n")
+	insert := `
+	INSERT INTO documents (id, user_id, title, extension, location, created_date, keyword) 
+	VALUES(?, ?, ?, ?, ?, ?, ?)
+	`
+	rows, err := db.Exec(insert,
+		note.Id.String(),
+		note.User_id.String(),
+		note.Title,
+		note.Extension,
+		note.Location,
+		note.CreatedDate.Format(time.RFC3339),
+		note.Keyword)
+
+	if err != nil {
+		return fmt.Errorf("Failed to insert note: %w", err)
+	}
+
+	fmt.Printf("DEBUG: Exec succeeded. Rows affected: %d\n", rows)
+
+	return nil
+}
 
 // NewDatabase creates a new database at the specified path
 func NewDatabase(dbPath string) (*Database, error) {
@@ -51,6 +77,8 @@ func (db *Database) open() error {
 	if err != nil {
 		return err
 	}
+
+	defer db.Close()
 
 	// Test the connection
 	return db.DB.Ping()
