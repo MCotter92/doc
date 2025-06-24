@@ -20,7 +20,6 @@ type Database struct {
 // func (db *Database) GetNoteByPath(filePath string) (*Note, error)
 // func SyncNoteWithDB(db *Database, filePath, frontmatter string) error
 
-// TODO: InserNote isn't getting past  db.Exec
 func InsertNote(db *sql.DB, note *Note) error {
 	fmt.Printf("DEBUG: InsertNote started\n")
 	insert := `

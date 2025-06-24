@@ -17,11 +17,11 @@
     [x] reorganize utils 
     [] apply frontmatter parsing
     [] implement core functionality 
-        - create 
-        - search 
-        - delete 
-        - update 
-        - sync
+        [x] create 
+        [] sync
+        [] update 
+        [] search 
+        [] delete 
     [] implement file syncing with database
     [] implement file watcher
         - thoughts on this file watcher. I think the only directory level watching would be if they moved thier notes folder. 
