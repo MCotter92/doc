@@ -15,20 +15,13 @@
             [x] determin a notes folder to watch 
     [x] implement a doc config command that cats out the user's config file
     [x] reorganize utils 
-    [] apply frontmatter parsing
     [] implement core functionality 
         [x] create 
-        [] sync
-        [] update 
-        [] search 
         [] delete 
+        [] search 
+        [] sync
+    [] apply frontmatter parsing
     [] implement file syncing with database
-    [] implement file watcher
-        - thoughts on this file watcher. I think the only directory level watching would be if they moved thier notes folder. 
-        - For file watching, I would want to watch for changes to the frontmatter on each file. 
-        - If the user changes the keyword for a file, the file watcher triggers a sql query that updates the database accordingly.
-        - I imagine the hard part will be updating the database, not having the file watcher shoot up a flair.
-        - Maybe I can have a watcher spin up via a goroutine when a file in the notes directory is opened? And when the user saves, that goroutine also compares the current frontmatter to that file's entry in the database? If they are different, reconcile.  
     [] wrap in a rest api
         - python package fastapi
         - look into insomnia rest application version prior to 8

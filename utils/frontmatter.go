@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"strings"
 )
 
 func SetFrontmatter(note *Note) string {
@@ -19,8 +18,4 @@ func SetFrontmatter(note *Note) string {
 
 	return frontmatter
 
-}
-
-// TODO: finish this
-func ParseFrontmatter(filePath string) (Note, error) {
 }
