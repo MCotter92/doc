@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -15,10 +16,62 @@ type Database struct {
 	DB   *sql.DB
 }
 
-// TODO: finish these
-// func (db *Database) UpdateNote(noteID int, title, content string) error
-// func (db *Database) GetNoteByPath(filePath string) (*Note, error)
-// func SyncNoteWithDB(db *Database, filePath, frontmatter string) error
+type SearchCriteria struct {
+	Keyword     string
+	Title       string
+	Location    string
+	CreatedDate string
+}
+
+func (db *Database) Search(criteria SearchCriteria) ([]Note, error) {
+	var conditions []string
+	var args []interface{}
+
+	if criteria.Keyword != "" {
+		conditions = append(conditions, "keyword = ?")
+		args = append(args, criteria.Keyword)
+	}
+
+	if criteria.Title != "" {
+		conditions = append(conditions, "title = ?")
+		args = append(args, criteria.Title)
+	}
+
+	if criteria.Location != "" {
+		conditions = append(conditions, "location = ?")
+		args = append(args, criteria.Location)
+
+	}
+
+	if criteria.CreatedDate != "" {
+		conditions = append(conditions, "createdDate = ?")
+		args = append(args, criteria.CreatedDate)
+
+	}
+
+	if len(conditions) == 0 {
+		return nil, fmt.Errorf("no search criteria provided")
+	}
+
+	query := fmt.Sprintf("SELECT id, keyword, title, location, createdDate FROM documents WHERE %s", strings.Join(conditions, " AND "))
+
+	rows, err := db.DB.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("could not execute search query: %w", err)
+	}
+	defer rows.Close()
+
+	var notes []Note
+	for rows.Next() {
+		var note Note
+		err := rows.Scan(&note.Id, &note.Keyword, &note.Title, &note.Location, &note.CreatedDate)
+		if err != nil {
+			return nil, fmt.Errorf("Could not scan row: %w", err)
+		}
+		notes = append(notes, note)
+	}
+	return notes, nil
+}
 
 func InsertNote(db *sql.DB, note *Note) error {
 	fmt.Printf("DEBUG: InsertNote started\n")

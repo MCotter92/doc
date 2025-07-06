@@ -20,8 +20,6 @@ type Note struct {
 	Keyword     string
 }
 
-// TODO: Finish these
-
 func CreateNoteFile(title, keyword string) error {
 
 	note, err := NewNote(title, keyword)
