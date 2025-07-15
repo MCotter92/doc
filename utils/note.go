@@ -74,7 +74,7 @@ func (n *Note) setUserID() error {
 		return err
 	}
 	var userID string
-	query := `SELECT id FROM user LIMIT 1`
+	query := `SELECT id FROM users LIMIT 1`
 	err = db.QueryRow(query).Scan(&userID)
 	if err != nil {
 		return err

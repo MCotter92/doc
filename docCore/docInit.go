@@ -3,7 +3,6 @@ package docCore
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/MCotter92/doc/utils"
 	_ "github.com/mattn/go-sqlite3"
@@ -43,9 +42,7 @@ func DocInit() error {
 	fmt.Println("Config:")
 	fmt.Println(string(contents))
 
-	dbPath := filepath.Join(filepath.Dir(user.ConfigPath), "doc.db")
-
-	database, err := utils.NewDatabase(dbPath)
+	database, err := utils.NewDatabase()
 	if err != nil {
 		fmt.Printf("Could not create database: %w", err)
 		return err

@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -44,7 +45,7 @@ func (db *Database) Search(criteria SearchCriteria) ([]Note, error) {
 	}
 
 	if criteria.CreatedDate != "" {
-		conditions = append(conditions, "createdDate = ?")
+		conditions = append(conditions, "created_date = ?")
 		args = append(args, criteria.CreatedDate)
 
 	}
@@ -53,7 +54,7 @@ func (db *Database) Search(criteria SearchCriteria) ([]Note, error) {
 		return nil, fmt.Errorf("no search criteria provided")
 	}
 
-	query := fmt.Sprintf("SELECT id, keyword, title, location, createdDate FROM documents WHERE %s", strings.Join(conditions, " AND "))
+	query := fmt.Sprintf("SELECT id, keyword, title, location, created_date FROM documents WHERE %s", strings.Join(conditions, " AND "))
 
 	rows, err := db.DB.Query(query, args...)
 	if err != nil {
@@ -64,9 +65,18 @@ func (db *Database) Search(criteria SearchCriteria) ([]Note, error) {
 	var notes []Note
 	for rows.Next() {
 		var note Note
-		err := rows.Scan(&note.Id, &note.Keyword, &note.Title, &note.Location, &note.CreatedDate)
+		var CreatedDateStr string
+		var idStr string
+		err := rows.Scan(&idStr, &note.Keyword, &note.Title, &note.Location, &CreatedDateStr)
 		if err != nil {
 			return nil, fmt.Errorf("Could not scan row: %w", err)
+		}
+		note.Id, err = uuid.Parse(idStr)
+		if err != nil {
+			return nil, fmt.Errorf("Invalid UUID for id: %w", err)
+		}
+		if CreatedDateStr != "" {
+			note.CreatedDate, err = time.Parse(time.RFC3339, CreatedDateStr)
 		}
 		notes = append(notes, note)
 	}
@@ -98,10 +108,17 @@ func InsertNote(db *sql.DB, note *Note) error {
 }
 
 // NewDatabase creates a new database at the specified path
-func NewDatabase(dbPath string) (*Database, error) {
-	db := &Database{
-		Path: dbPath,
+func NewDatabase() (*Database, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return nil, fmt.Errorf("could not get homedir: %w", err)
 	}
+	db := &Database{
+		Path: filepath.Join(homeDir, ".config", "doc", "doc.db"),
+	}
+	db.open()
+	// fmt.Println("DB Path = ", db.Path)
+	// fmt.Println("DB Driver = ", db.DB)
 
 	// Create directory if it doesn't exist
 	if err := db.createDirectory(); err != nil {
@@ -129,8 +146,6 @@ func (db *Database) open() error {
 	if err != nil {
 		return err
 	}
-
-	defer db.Close()
 
 	// Test the connection
 	return db.DB.Ping()

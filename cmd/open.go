@@ -5,8 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"github.com/MCotter92/doc/utils"
 	"github.com/spf13/cobra"
@@ -37,17 +35,12 @@ to quickly create a Cobra application.`,
 			CreatedDate: createdDateFlag,
 		}
 
-		homedir, err := os.UserHomeDir()
-		if err != nil {
-			fmt.Printf("Error getting home director: %v\n", err)
-		}
-		dbPath := filepath.Join(homedir, ".config", "doc", "doc.db")
 		//TODO: figure out my custom NewDatabase mess.
-		db, err := utils.NewDatabase(dbPath)
+		db, err := utils.NewDatabase()
 		if err != nil {
 			fmt.Printf("could not open db: %v", err)
 		}
-		defer db.DB.Close()
+		defer db.Close()
 
 		notes, err := db.Search(criteria)
 		if err != nil {
@@ -61,7 +54,7 @@ to quickly create a Cobra application.`,
 
 		fmt.Printf("Found %d documents(s):\n\n", len(notes))
 		for _, doc := range notes {
-			fmt.Printf("ID: %d\n", doc.Id)
+			fmt.Printf("ID: %s\n", doc.Id)
 			fmt.Printf("Keyword: %s\n", doc.Keyword)
 			fmt.Printf("Title: %s\n", doc.Title)
 			fmt.Printf("Location: %s\n", doc.Location)
