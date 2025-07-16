@@ -1,13 +1,14 @@
+# Doc
 A CLI for organizing your documents inspired by Obsidian.
 
-# Doc core functionality
+## Doc core functionality
     - the user specifies a folder for notes (like vaults for obsidian)
     - the user applies metadata to a file with frontmatter (tags (or backlinks) should be inline and notated with [[tag]])
     - the metadata is collected by a database and stored
     - the user can then search the database to find files
     - things are automatically updated if the user makes a change to the metadata or moves a file
 
-## todo list 
+### todo list 
     [x] implement a doc init command that applies a .doc folder with a yaml file inside for user config
     [x] implement yaml config file
         - should have the following
