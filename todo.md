@@ -2,7 +2,7 @@
 
 ## Doc core functionality
     [] the user specifies a folder for notes (like vaults for obsidian)
-    [] the user applies metadata to a file with frontmatter (tags have the option to be inline and notated with [[tag]])
+    [] the user applies metadata to a file with frontmatter (tags (or backlinks) should be inline and notated with [[tag]])
     [] the metadata is collected by a database and stored
     [] the user can then search the database to find files
     [] things are automatically updated if the user makes a change to the metadata or moves a file
@@ -17,13 +17,17 @@
     [x] reorganize utils 
     [] implement core functionality 
         [x] create 
-        [] delete 
-        [] search 
-        [] sync
+        [x] search 
+        [] delete - search then update 
+        [] update - search then update
+        [] sync - probably search then update en masse? 
+    [] apply inline backlinks 
+        - should these be part of the db? 
+        - user could say give me all my notes tagged to this note. Just a thought. Idk how this would change the db schema.
+    [] apply file watcher
     [] apply frontmatter parsing
-    [] implement file syncing with database
+        - if the user changes the frontmatter in a file, the file watcher should trigger the update command on that file
+    [] implement automatic file syncing with database? - is this necessary given the sync command? 
     [] wrap in a rest api
-        - python package fastapi
-        - look into insomnia rest application version prior to 8
-            - is there an equivelent for go? 
     [] look into test coverage
+

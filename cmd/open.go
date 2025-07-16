@@ -35,7 +35,6 @@ to quickly create a Cobra application.`,
 			CreatedDate: createdDateFlag,
 		}
 
-		//TODO: figure out my custom NewDatabase mess.
 		db, err := utils.NewDatabase()
 		if err != nil {
 			fmt.Printf("could not open db: %v", err)
@@ -52,6 +51,8 @@ to quickly create a Cobra application.`,
 			return
 		}
 
+		//TODO: implement user input parsing to choose which notes to open. Might want to look into some kind of nice table output
+		// and the user just selects the number corresponding to the note they want to open.
 		fmt.Printf("Found %d documents(s):\n\n", len(notes))
 		for _, doc := range notes {
 			fmt.Printf("ID: %s\n", doc.Id)
