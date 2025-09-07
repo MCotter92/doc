@@ -1,0 +1,26 @@
+{
+ "id": "00000000-0000-0000-0000-000000000000",
+ "name": "",
+ "documents": [
+  {
+   "id": "d81331bd-8a44-44f9-a45e-6398986b1351",
+   "title": "test.md",
+   "extension": ".md",
+   "location": "/Users/mason_cotter/dev/doc-test-data",
+   "FullName": "/Users/mason_cotter/dev/doc-test-data/test.md",
+   "createdDate": "2025-04-04T20:51:18.999546-04:00",
+   "Keyword": "testing",
+   "inode": 48371732
+  },
+  {
+   "id": "a59c5225-1f92-4fb0-ad37-fdc988736065",
+   "title": "note.md",
+   "extension": ".md",
+   "location": "/Users/mason_cotter/dev/doc",
+   "FullName": "/Users/mason_cotter/dev/doc/note.md",
+   "createdDate": "2025-04-13T09:37:58.786073-04:00",
+   "Keyword": "php",
+   "inode": 48875382
+  }
+ ]
+}
