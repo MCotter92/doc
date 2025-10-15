@@ -83,13 +83,13 @@ func (db *Database) Search(criteria SearchCriteria) ([]Doc, error) {
 	return notes, nil
 }
 
-func InsertUser(db *sql.DB, user *User) error {
+func (db *Database) InsertUser(user *User) error {
 
 	insert :=
 		`INSERT INTO users (id, name, notesLocation, editor, configPath) 
 	VALUES(?, ?, ?, ?, ?)`
 
-	_, err := db.Exec(insert, user.ID, user.UserName, user.NotesLocation, user.Editor, user.ConfigPath)
+	_, err := db.DB.Exec(insert, user.ID, user.UserName, user.NotesLocation, user.Editor, user.ConfigPath)
 	if err != nil {
 		return fmt.Errorf("Failed to insert user: %w", err)
 	}
@@ -100,8 +100,7 @@ func InsertUser(db *sql.DB, user *User) error {
 
 }
 
-func InsertNote(db *sql.DB, doc *Doc) error {
-
+func (db *Database) InsertDoc(doc *Doc) error {
 	fmt.Println("ID: ", doc.Id)
 	fmt.Println("UserID", doc.UserID)
 	fmt.Println("Title: ", doc.Title)
@@ -113,7 +112,8 @@ func InsertNote(db *sql.DB, doc *Doc) error {
 	INSERT INTO documents (id, userID, directory, title, path, created_date, keyword) 
 	VALUES(?, ?, ?, ?, ?, ?, ?)
 	`
-	rows, err := db.Exec(insert,
+
+	result, err := db.DB.Exec(insert, // Assuming db.DB is your *sql.DB
 		doc.Id.String(),
 		doc.UserID.String(),
 		doc.Directory,
@@ -121,17 +121,43 @@ func InsertNote(db *sql.DB, doc *Doc) error {
 		doc.Path,
 		doc.CreatedDate.Format(time.RFC3339),
 		doc.Keyword)
-
 	if err != nil {
-		return fmt.Errorf("Failed to insert note: %w", err)
+		return fmt.Errorf("failed to insert note: %w", err)
 	}
 
-	fmt.Printf("Exec succeeded. Rows affected: %d\n", rows)
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	fmt.Printf("Document inserted successfully. Rows affected: %d\n", rowsAffected)
+	return nil
+}
+
+// TODO: make this recieve uuid and delete based on that.
+func (db *Database) DeleteDoc(id string) error {
+
+	query := `DELETE FROM documents WHERE id = ?`
+
+	result, err := db.DB.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("Failed to delete note: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("Failed to get rows affected: %w", err)
+	}
+
+	fmt.Printf("Rows affected: %d\n", rowsAffected)
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("No docuemnt found with id: %s", id)
+	}
 
 	return nil
 }
 
-// NewDatabase creates a new database at the specified path
 func NewDatabase() (*Database, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -140,14 +166,13 @@ func NewDatabase() (*Database, error) {
 	db := &Database{
 		Path: filepath.Join(homeDir, ".config", "doc", "doc.db"),
 	}
-	db.open()
 
 	// Create directory if it doesn't exist
 	if err := db.createDirectory(); err != nil {
 		return nil, fmt.Errorf("failed to create database directory: %w", err)
 	}
 
-	// Open/create the database file
+	// Open/create the database file (only once!)
 	if err := db.open(); err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}
@@ -155,13 +180,11 @@ func NewDatabase() (*Database, error) {
 	return db, nil
 }
 
-// createDirectory creates the directory for the database if it doesn't exist
 func (db *Database) createDirectory() error {
 	dbDir := filepath.Dir(db.Path)
 	return os.MkdirAll(dbDir, 0755)
 }
 
-// open opens the database connection
 func (db *Database) open() error {
 	var err error
 	db.DB, err = sql.Open("sqlite3", db.Path)
@@ -173,7 +196,6 @@ func (db *Database) open() error {
 	return db.DB.Ping()
 }
 
-// CreateTables creates the users and notes tables
 func (db *Database) CreateTables() error {
 	if err := db.createUsersTable(); err != nil {
 		return fmt.Errorf("failed to create users table: %w", err)

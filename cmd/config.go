@@ -4,8 +4,15 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	// "github.com/MCotter92/doc/utils"
+	"github.com/MCotter92/doc/docCore"
 	"github.com/spf13/cobra"
+)
+
+var (
+	editor        string
+	userName      string
+	notesLocation string
+	showConfig    bool
 )
 
 // configCmd represents the config command
@@ -18,21 +25,28 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		// utils.ShowConfig()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		// TODO: add viper file watcher to config file to watch for changes there
+		hasUpdates := editor != "" || userName != "" || notesLocation != ""
+
+		if hasUpdates {
+			updateReq := docCore.ConfigUpdateRequest{
+				Editor:        editor,
+				UserName:      userName,
+				NotesLocation: notesLocation,
+			}
+			return docCore.UpdateUserConfig(updateReq)
+		}
+
+		return docCore.ShowUserConfig(showConfig)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(configCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// configCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// configCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	configCmd.Flags().StringVarP(&editor, "editor", "e", "", "Set the default editor (e.g., nvim, code, emacs)")
+	configCmd.Flags().StringVarP(&userName, "username", "u", "", "Set the username")
+	configCmd.Flags().StringVarP(&notesLocation, "notes-location", "n", "", "Set the notes location directory")
+	configCmd.Flags().BoolVar(&showConfig, "show", false, "Show detailed configuration including internal paths")
 }

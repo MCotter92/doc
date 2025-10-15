@@ -8,20 +8,23 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"gopkg.in/yaml.v2"
+	"github.com/spf13/viper"
 )
 
 type User struct {
-	ID            string `yaml:"ID"`
-	UserName      string `yaml:"userName"`
-	NotesLocation string `yaml:"notesLocation"`
-	Editor        string `yaml:"editor"`
-	ConfigPath    string `yaml:"configPath"`
+	ID            string `mapstructure:"id" yaml:"id"`
+	UserName      string `mapstructure:"userName" yaml:"userName"`
+	NotesLocation string `mapstructure:"notesLocation" yaml:"notesLocation"`
+	Editor        string `mapstructure:"editor" yaml:"editor"`
+	ConfigPath    string `mapstructure:"configPath" yaml:"configPath"`
 }
 
 func NewUser() (*User, error) {
 	user := &User{}
 
+	if err := setupViper(); err != nil {
+		return nil, fmt.Errorf("Failed to setup viper: %w", err)
+	}
 	user.setUserID()
 
 	if err := user.setDefaultConfigPath(); err != nil {
@@ -32,7 +35,11 @@ func NewUser() (*User, error) {
 		return nil, fmt.Errorf("failed to set notes location: %w", err)
 	}
 
-	// Prompt for user information
+	viper.SetDefault("id", user.ID)
+	viper.SetDefault("configPath", user.ConfigPath)
+	viper.SetDefault("notesLocation", user.NotesLocation)
+	viper.SetDefault("editor", "nvim")
+
 	if err := user.promptUserName(); err != nil {
 		return nil, fmt.Errorf("failed to set user name: %w", err)
 	}
@@ -41,7 +48,112 @@ func NewUser() (*User, error) {
 		return nil, fmt.Errorf("failed to set editor: %w", err)
 	}
 
+	if err := user.saveConfig(); err != nil {
+		return nil, fmt.Errorf("Failed to save config: %w", err)
+	}
+
 	return user, nil
+}
+
+func GetUserConfig() (*User, error) {
+	if err := setupViper(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			return nil, fmt.Errorf("config file not found - please run initializatin first.")
+		}
+		return nil, fmt.Errorf("cound not read config: %w", err)
+
+	}
+	var user User
+	if err := viper.Unmarshal(&user); err != nil {
+		return nil, fmt.Errorf("could not unmarshl config: %w", err)
+	}
+
+	return &user, nil
+}
+
+func setupViper() error {
+	viper.SetConfigName("userConfig")
+	viper.SetConfigType("yaml")
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("Failed to get home directory: %w", err)
+	}
+
+	confgiDir := filepath.Join(homeDir, ".config", "doc")
+	viper.AddConfigPath(confgiDir)
+
+	viper.SetEnvPrefix("DOC")
+	viper.AutomaticEnv()
+
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	return nil
+}
+
+func (u *User) saveConfig() error {
+	viper.Set("id", u.ID)
+	viper.Set("userName", u.UserName)
+	viper.Set("notesLocation", u.NotesLocation)
+	viper.Set("editor", u.Editor)
+	viper.Set("configPath", u.ConfigPath)
+
+	configDir := filepath.Dir(u.ConfigPath)
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		return fmt.Errorf("Failed to write confit directory: %w", err)
+	}
+
+	if err := viper.WriteConfigAs(u.ConfigPath); err != nil {
+		return fmt.Errorf("Failed to write config file: %w", err)
+	}
+
+	return nil
+}
+
+func (u *User) UpdateConfig(key string, value interface{}) error {
+	viper.Set(key, value)
+
+	switch key {
+	case "userName":
+		u.UserName = fmt.Sprintf("%v", value)
+	case "editor":
+		u.Editor = fmt.Sprintf("%v", value)
+	case "notesLocation":
+		u.NotesLocation = fmt.Sprintf("%v", value)
+	}
+
+	return u.saveConfig()
+}
+
+func (u *User) Validate() error {
+	if u.UserName == "" {
+		return fmt.Errorf("userName cannot be empty")
+	}
+	if u.Editor == "" {
+		return fmt.Errorf("editor cannot be empty")
+	}
+	if u.NotesLocation == "" {
+		return fmt.Errorf("notesLocation cannot be empty")
+	}
+
+	if _, err := os.Stat(u.NotesLocation); os.IsNotExist(err) {
+		if err := os.MkdirAll(u.NotesLocation, 0755); err != nil {
+			return fmt.Errorf("failed to create notes directory: %w", err)
+		}
+	}
+
+	return nil
+}
+
+func ConfigExists() bool {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return false
+	}
+
+	configPath := filepath.Join(homeDir, ".config", "doc", "userConfig.yaml")
+	_, err = os.Stat(configPath)
+	return err == nil
 }
 
 func (u *User) setUserID() {
@@ -53,7 +165,7 @@ func (u *User) setDefaultConfigPath() error {
 	if err != nil {
 		return fmt.Errorf("failed to set config path: %w", err)
 	}
-	u.ConfigPath = filepath.Join(homeDir, ".config", "doc", "userConfig.yaml")
+	u.ConfigPath = filepath.Join(homeDir, "Documents", "Notes")
 	return nil
 }
 
@@ -82,11 +194,15 @@ func (u *User) promptEditor() error {
 	if err != nil {
 		return fmt.Errorf("failed to readinput: %w", err)
 	}
-	u.Editor = input
+	if strings.TrimSpace(input) == "" {
+		// Use default if empty
+		u.Editor = "nvim"
+	} else {
+		u.Editor = input
+	}
 	return nil
 }
 
-// Helper function to read and clean user input
 func readInput() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
@@ -94,25 +210,4 @@ func readInput() (string, error) {
 		return "", fmt.Errorf("failed to read string: %w", err)
 	}
 	return strings.TrimSpace(input), nil
-}
-
-// TODO: need to dynamically go get config file location and then subsiquent info in it. should marshal it into a user struct. should probably make these methods on User struct.
-func GetUserConfig() (*User, error) {
-	var user User
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get home dir: %w", err)
-	}
-
-	p := filepath.Join(homeDir, ".config", "doc", "userConfig.yaml")
-	data, err := os.ReadFile(p)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file: %w", err)
-	}
-	err = yaml.Unmarshal(data, &user)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal data: %w", err)
-	}
-
-	return &user, nil
 }

@@ -51,7 +51,11 @@ func DocInit() error {
 		return err
 	}
 
-	err = utils.InsertUser(database.DB, user)
+	db, err := utils.NewDatabase()
+	if err != nil {
+		return err
+	}
+	err = db.InsertUser(user)
 	if err != nil {
 		return err
 	}

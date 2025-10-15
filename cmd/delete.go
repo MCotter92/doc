@@ -29,15 +29,23 @@ var deleteCmd = &cobra.Command{
 			CreatedDate: createdDateFlag,
 		}
 
-		searchRes, err := docCore.Search(searchCriteria)
+		searchRes, db, err := docCore.Search(searchCriteria)
 		if err != nil {
 			fmt.Println(err)
 		}
-		// TODO: finish delete
-		docCore.Delete(searchRes)
+		defer db.Close()
+
+		err = docCore.Delete(searchRes, db)
+		if err != nil {
+			fmt.Println(err)
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(deleteCmd)
+	deleteCmd.Flags().StringVarP(&keywordFlag, "keyword", "k", "", "Search by keyword")
+	deleteCmd.Flags().StringVarP(&titleFlag, "title", "t", "", "Search by title")
+	deleteCmd.Flags().StringVarP(&pathFlag, "location", "l", "", "Search by location")
+	deleteCmd.Flags().StringVarP(&createdDateFlag, "created", "c", "", "Search by created date")
 }

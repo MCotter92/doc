@@ -4,7 +4,10 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/MCotter92/doc/docCore"
+	"github.com/MCotter92/doc/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +27,14 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		docCore.CreateFile(path, keyword)
+		db, err := utils.NewDatabase()
+		if err != nil {
+			fmt.Println("Could not create new db: %w", err)
+		}
+		err = docCore.CreateDoc(path, keyword, db)
+		if err != nil {
+			fmt.Println(err)
+		}
 	},
 }
 

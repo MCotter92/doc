@@ -26,16 +26,23 @@ A CLI for organizing your documents inspired by Obsidian.
     [] implement core functionality 
         [x] create 
         [x] open - search then open
-        [] delete - search then update 
+        [x] delete - search then update 
+        []  config 
+        [] update - maybe if there are now flags, then show a table output where users can find what they want. or if the user provies
+        the full path, then they can say -k=newKeyword to update the keyword.
         [] sync - probably search then update en masse? 
-        later - [] explore - not just internal search used, might want a search command available to the user so they can explore.
-            - i might want to do this later. I think a cool TUI interface would be good. Something like telescope? Sounds like a big project
+        [] explore - not just internal search used, might want a search command available to the user so they can explore.
+            - maybe allow user to do whatever they need from here. select the delete or open etc. maybe a tui? 
+
+        - LATER: 
+            - go back and refactor cmd/ to utilize integration points effectively. 
+            [Integration Points Documentation](https://cobra.dev/docs/explanations/philosophy)
     [] apply inline backlinks 
         - should these be part of the db? 
         - user could say give me all my notes tagged to this note. Just a thought. Idk how this would change the db schema.
     [] apply file watcher for frontmatter parsing
         - if the user changes the frontmatter in a file, the file watcher should trigger the update command on that file
     [] implement automatic file syncing with database? 
-    [] wrap in a rest api
+    [] implement REST API 
     [] implement unit testing for easier refactoring 
 

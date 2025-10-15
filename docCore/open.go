@@ -23,7 +23,7 @@ func Open(searchRes []utils.Doc) error {
 		return fmt.Errorf("Could not read string: %s", err)
 	}
 
-	fmt.Printf("You selected %s\n", input)
+	// fmt.Printf("You selected %s\n", input)
 
 	config, err := utils.GetUserConfig()
 	if err != nil {

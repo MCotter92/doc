@@ -37,7 +37,7 @@ to quickly create a Cobra application.`,
 			CreatedDate: createdDateFlag,
 		}
 
-		searchRes, err := docCore.Search(searchCriteria)
+		searchRes, _, err := docCore.Search(searchCriteria)
 		if err != nil {
 			fmt.Println(err)
 		}
