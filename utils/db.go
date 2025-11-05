@@ -24,6 +24,16 @@ type SearchCriteria struct {
 	CreatedDate string
 }
 
+type UpdateCriteria struct {
+	Keyword     string
+	Title       string
+	Path        string
+	CreatedDate string
+}
+
+// TODO: make this.
+func (db *Database) Update(criteria SearchCriteria) ([]Doc, error) { return nil, nil }
+
 func (db *Database) Search(criteria SearchCriteria) ([]Doc, error) {
 	var conditions []string
 	var args []interface{}
