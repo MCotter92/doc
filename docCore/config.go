@@ -15,7 +15,7 @@ type ConfigUpdateRequest struct {
 }
 
 // TODO: make sure that the database is being upated as well!! That is not happening yet!!
-func UpdateUserConfig(req ConfigUpdateRequest) error {
+func UpdateUserConfigFile(req ConfigUpdateRequest) error {
 	user, err := utils.GetUserConfig()
 	if err != nil {
 		return fmt.Errorf("Faild to get user config: %w", err)
@@ -49,12 +49,15 @@ func UpdateUserConfig(req ConfigUpdateRequest) error {
 		}
 
 		fmt.Println("\nUpdated Configuragion!")
+		// call UpdateUserTable() here?
 		return ShowUserConfig(false)
 	}
 
 	return nil
 
 }
+
+func UpdateUserTable(req ConfigUpdateRequest) error {}
 
 func ShowUserConfig(showDetailed bool) error {
 	user, err := utils.GetUserConfig()

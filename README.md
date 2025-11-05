@@ -16,33 +16,43 @@ A CLI for organizing your documents inspired by Obsidian.
 
 
 ### todo list 
-    [x] implement a doc init command that applies a .doc folder with a yaml file inside for user config
-    [x] implement yaml config file
-        - should have the following
-            [x] editor of choice
-            [x] determin a notes folder to watch 
-    [x] implement a doc config command that cats out the user's config file
-    [x] reorganize utils 
-    [] implement core functionality 
-        [x] create 
-        [x] open - search then open
-        [x] delete - search then update 
-        []  config 
-        [] update - maybe if there are now flags, then show a table output where users can find what they want. or if the user provies
-        the full path, then they can say -k=newKeyword to update the keyword.
-        [] sync - probably search then update en masse? 
-        [] explore - not just internal search used, might want a search command available to the user so they can explore.
-            - maybe allow user to do whatever they need from here. select the delete or open etc. maybe a tui? 
 
-        - LATER: 
-            - go back and refactor cmd/ to utilize integration points effectively. 
-            [Integration Points Documentation](https://cobra.dev/docs/explanations/philosophy)
-    [] apply inline backlinks 
-        - should these be part of the db? 
-        - user could say give me all my notes tagged to this note. Just a thought. Idk how this would change the db schema.
-    [] apply file watcher for frontmatter parsing
-        - if the user changes the frontmatter in a file, the file watcher should trigger the update command on that file
-    [] implement automatic file syncing with database? 
-    [] implement REST API 
-    [] implement unit testing for easier refactoring 
+## Done
+
+[x] implement a doc init command that applies a .doc folder with a yaml file inside for user config
+[x] implement yaml config file
+    - should have the following
+[x] editor of choice
+[x] determin a notes folder to watch 
+[x] implement a doc config command that cats out the user's config file
+[x] reorganize utils 
+[] implement core functionality 
+[x] create 
+[x] open - search then open
+[x] delete - search then update 
+
+## Now
+[] update - maybe if there are now flags, then show a table output where users can find what they want. or if the user provies
+the full path, then they can say -k=newKeyword to update the keyword.
+
+## Next 
+
+[] config 
+[] sync - probably search then update en masse? 
+[] explore - not just internal search used, might want a search command available to the user so they can explore.
+    - maybe allow user to do whatever they need from here. select the delete or open etc. maybe a tui? 
+
+## Later 
+[] go back and refactor cmd/ to utilize integration points effectively. 
+    - https://cobra.dev/docs/explanations/philosophy
+[] apply inline backlinks 
+    - should these be part of the db? 
+    - user could say give me all my notes tagged to this note. Just a thought. Idk how this would change the db schema.
+[] apply file watcher for frontmatter parsing
+    - if the user changes the frontmatter in a file, the file watcher should trigger the update command on that file
+[] implement automatic file syncing with database? 
+[] implement REST API 
+[] implement some AWS functionality like Jake suggested a LONG time ago. Dynamo DB backupd w/ IaC? Something fun to think about
+[] implement unit testing for easier refactoring 
+[] can i trim down my imports? aquasecurity/table might not be really needed tbh. I bet I can figure that out.
 
