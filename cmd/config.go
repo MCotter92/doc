@@ -30,12 +30,12 @@ to quickly create a Cobra application.`,
 		hasUpdates := editor != "" || userName != "" || notesLocation != ""
 
 		if hasUpdates {
-			updateReq := docCore.ConfigUpdateRequest{
-				Editor:        editor,
-				UserName:      userName,
-				NotesLocation: notesLocation,
-			}
-			return docCore.UpdateUserConfig(updateReq)
+			// updateReq := docCore.ConfigUpdateRequest{
+			// 	Editor:        editor,
+			// 	UserName:      userName,
+			// 	NotesLocation: notesLocation,
+			// }
+			// return docCore.UpdateUserConfig(updateReq)
 		}
 
 		return docCore.ShowUserConfig(showConfig)

@@ -34,27 +34,38 @@ A CLI for organizing your documents.
 ## Now
 **Make it work, then make it good.**
 
-- [] make sure that UpdateCriteria and SearchCriteria structs match up with Doc struct in naming. 
-- [] make sure cli flags match up with Doc struct.
+- [x] make sure that UpdateCriteria and SearchCriteria structs match up with Doc struct in field naming. 
+- [x] make sure cli flags match up with Doc struct.
     - do I need directory in doc struct? 
-- [] update - maybe if there are no flags, then show a table output where users can find what they want. or if the user provies
-the full path, then they can say -k=newKeyword to update the keyword.
-    - update db
-        - [] make db.Update() func. 
-        - [] make docCore.Update() 
-            - [] calls db.Search then db.Update 
+- [] get some test coverage going 
+- [] update 
+    - update a note: 
+        - update db
+            - [x] make db.UpdateDocumentsTable() 
+                - if the doc path is changed, move the file
+            - [x] I need to make sure I am seperating concerns properly in docCore/config.go. I have some redundant functions I think 
+            - [] make db.UpdateUsersTable()
+                - if the config path is changed, move the file
+                - do not give the user the option to udate their UUIDs
+            - [] make docCore.Update(table string, searchResult SearchCriteria) error {}
+                - recieves results from docCore.Search()
+                - control flow for table type
 
-    - update frontmatter
-        - [] make updateFrontmatter() 
-        - [] make unmarshalFrontmatter(pathToFile) *someStruct {}
-            - needs to 
-                - 1. read file and marshal yaml into a struct
-                - 2. use updateCriteria fields to edit the marshaled yaml
-                - 3. overwrites the yaml in the file and only the yaml
-        - [] config 
-            - this is just waiting on updateUserConfig for now.
+
+        - update frontmatter
+            - [] make updateFrontmatter() 
+            - [] make unmarshalFrontmatter(pathToFile) *someStruct {}
+                - needs to 
+                    - 1. read file and marshal yaml into a struct
+                    - 2. use updateCriteria fields to edit the marshaled yaml
+                    - 3. overwrites the yaml in the file and only the yaml
+        - update a user config:
+            - [] updateUserConfig 
+        - maybe if there are no flags, then show a table output where users can find what they want. or if the user provies
+        the full path, then they can say -k=newKeyword to update the keyword.
 
 ## Next 
+- [] make SearchCriteria, UpdateCriteria full of pointers and update funcs accordingly 
 - [] doc sync
     - probably search then update en masse? 
 - [] implement REST API 
@@ -72,6 +83,9 @@ the full path, then they can say -k=newKeyword to update the keyword.
     - eventually allows for management of AWS stuff too 
 - [] implement automatic file syncing with database? 
 - [] implement some AWS functionality like Jake suggested a LONG time ago. Dynamo DB backupd w/ IaC? Something fun to think about
+    - apply interfaces for CRUD? 
 - [] implement unit testing for easier refactoring 
 - [] can i trim down my imports? aquasecurity/table might not be really needed tbh. I bet I can figure that out.
+- [] doc view command with Glow to just read notes 
+    - could be fun to learn how glow works and write my own renderer
 

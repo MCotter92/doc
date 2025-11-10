@@ -23,10 +23,13 @@ var deleteCmd = &cobra.Command{
 	to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		searchCriteria := utils.SearchCriteria{
-			Keyword:     keywordFlag,
+			Id:          idFlag,
+			UserID:      userIdFlag,
+			Directory:   directoryFlag,
 			Title:       titleFlag,
 			Path:        pathFlag,
 			CreatedDate: createdDateFlag,
+			Keyword:     keywordFlag,
 		}
 
 		searchRes, db, err := docCore.Search(searchCriteria)
@@ -44,8 +47,11 @@ var deleteCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(deleteCmd)
-	deleteCmd.Flags().StringVarP(&keywordFlag, "keyword", "k", "", "Search by keyword")
-	deleteCmd.Flags().StringVarP(&titleFlag, "title", "t", "", "Search by title")
-	deleteCmd.Flags().StringVarP(&pathFlag, "location", "l", "", "Search by location")
+	deleteCmd.Flags().StringVarP(&idFlag, "Id", "id", "", "Search by doc id.")
+	deleteCmd.Flags().StringVarP(&userIdFlag, "userId", "uid", "", "Search by doc user id.")
+	deleteCmd.Flags().StringVarP(&directoryFlag, "directory", "d", "", "Search by a doc's directory.")
+	deleteCmd.Flags().StringVarP(&titleFlag, "title", "t", "", "Search by a doc's title.")
+	deleteCmd.Flags().StringVarP(&pathFlag, "path", "f", "", "Search by a doc's full path.")
 	deleteCmd.Flags().StringVarP(&createdDateFlag, "created", "c", "", "Search by created date")
+	deleteCmd.Flags().StringVarP(&keywordFlag, "keyword", "k", "", "Search by keyword")
 }

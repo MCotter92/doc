@@ -12,10 +12,13 @@ import (
 )
 
 var (
-	keywordFlag     string
+	idFlag          string
+	userIdFlag      string
+	directoryFlag   string
 	titleFlag       string
 	pathFlag        string
 	createdDateFlag string
+	keywordFlag     string
 )
 
 // openCmd represents the open command
@@ -31,10 +34,13 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		searchCriteria := utils.SearchCriteria{
-			Keyword:     keywordFlag,
+			Id:          idFlag,
+			UserID:      userIdFlag,
+			Directory:   directoryFlag,
 			Title:       titleFlag,
 			Path:        pathFlag,
 			CreatedDate: createdDateFlag,
+			Keyword:     keywordFlag,
 		}
 
 		searchRes, _, err := docCore.Search(searchCriteria)
@@ -52,8 +58,11 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(openCmd)
 
-	openCmd.Flags().StringVarP(&keywordFlag, "keyword", "k", "", "Search by keyword")
-	openCmd.Flags().StringVarP(&titleFlag, "title", "t", "", "Search by title")
-	openCmd.Flags().StringVarP(&pathFlag, "location", "l", "", "Search by location")
+	openCmd.Flags().StringVarP(&idFlag, "Id", "id", "", "Search by doc id.")
+	openCmd.Flags().StringVarP(&userIdFlag, "userId", "uid", "", "Search by doc user id.")
+	openCmd.Flags().StringVarP(&directoryFlag, "directory", "d", "", "Search by a doc's directory.")
+	openCmd.Flags().StringVarP(&titleFlag, "title", "t", "", "Search by a doc's title.")
+	openCmd.Flags().StringVarP(&pathFlag, "path", "f", "", "Search by a doc's full path.")
 	openCmd.Flags().StringVarP(&createdDateFlag, "created", "c", "", "Search by created date")
+	openCmd.Flags().StringVarP(&keywordFlag, "keyword", "k", "", "Search by keyword")
 }

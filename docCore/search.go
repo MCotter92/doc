@@ -15,10 +15,10 @@ func Search(searchCriteria utils.SearchCriteria) ([]utils.Doc, *utils.Database, 
 		return nil, nil, fmt.Errorf("Could not open db: %s", err)
 	}
 
-	res, err := db.Search(searchCriteria)
+	res, err := db.SearchDocumentsTable(searchCriteria)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Search failed: %s", err)
 		db.Close()
+		return nil, nil, fmt.Errorf("Search failed: %s", err)
 	}
 
 	if len(res) == 0 {

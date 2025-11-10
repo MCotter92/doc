@@ -17,47 +17,87 @@ type Database struct {
 	DB   *sql.DB
 }
 
+// TODO: make these fields in both structs pointers and update funcs accordingly
+//
+//	type SearchCriteria struct {
+//		Id          *uuid.UUID
+//		UserID      *uuid.UUID
+//		Directory   *string
+//		Title       *string
+//		Path        *string
+//		CreatedDate *time.Time
+//		Keyword     *string
+//	}
 type SearchCriteria struct {
-	Keyword     string
+	Id          string
+	UserID      string
+	Directory   string
 	Title       string
 	Path        string
 	CreatedDate string
+	Keyword     string
 }
 
-type UpdateCriteria struct {
-	Keyword     string
+//	type UpdateNoteCriteria struct {
+//		UserID      *uuid.UUID
+//		Directory   *string
+//		Title       *string
+//		Path        *string
+//		CreatedDate *time.Time
+//		Keyword     *string
+//	}
+
+type UpdateNoteCriteria struct {
+	Id          string
+	UserID      string
+	Directory   string
 	Title       string
 	Path        string
 	CreatedDate string
+	Keyword     string
 }
 
-// TODO: make this.
-func (db *Database) Update(criteria SearchCriteria) ([]Doc, error) { return nil, nil }
+// TODO: This currently updates one note at a time. Obviously want to change this.
 
-func (db *Database) Search(criteria SearchCriteria) ([]Doc, error) {
+func (db *Database) SearchDocumentsTable(criteria SearchCriteria) ([]Doc, error) {
+
 	var conditions []string
 	var args []interface{}
 
-	if criteria.Keyword != "" {
-		conditions = append(conditions, "keyword = ?")
-		args = append(args, criteria.Keyword)
+	if criteria.Id != "" {
+		conditions = append(conditions, "Id = ?")
+		args = append(args, criteria.Id)
+	}
+
+	if criteria.UserID != "" {
+		conditions = append(conditions, "UserID = ?")
+		args = append(args, criteria.UserID)
+	}
+
+	if criteria.Directory != "" {
+		conditions = append(conditions, "Directory = ?")
+		args = append(args, criteria.Directory)
 	}
 
 	if criteria.Title != "" {
-		conditions = append(conditions, "title = ?")
+		conditions = append(conditions, "Title = ?")
 		args = append(args, criteria.Title)
 	}
 
 	if criteria.Path != "" {
-		conditions = append(conditions, " path= ?")
+		conditions = append(conditions, " path = ?")
 		args = append(args, criteria.Path)
 
 	}
 
 	if criteria.CreatedDate != "" {
-		conditions = append(conditions, "created_date = ?")
+		conditions = append(conditions, "CreatedDate = ?")
 		args = append(args, criteria.CreatedDate)
+	}
 
+	if criteria.Keyword != "" {
+		conditions = append(conditions, "keyword = ?")
+		args = append(args, criteria.Keyword)
 	}
 
 	if len(conditions) == 0 {
@@ -92,6 +132,78 @@ func (db *Database) Search(criteria SearchCriteria) ([]Doc, error) {
 	}
 	return notes, nil
 }
+
+func (db *Database) UpdateDocumentsTable(searchResult []Doc, criteria UpdateNoteCriteria) error {
+
+	var conditions []string
+	var args []interface{}
+
+	if criteria.Id != "" {
+		conditions = append(conditions, "Id = ?")
+		args = append(args, criteria.Id)
+	}
+
+	if criteria.UserID != "" {
+		conditions = append(conditions, "UserID = ?")
+		args = append(args, criteria.UserID)
+	}
+
+	if criteria.Directory != "" {
+		conditions = append(conditions, "Directory = ?")
+		args = append(args, criteria.Directory)
+	}
+
+	if criteria.Title != "" {
+		conditions = append(conditions, "Title = ?")
+		args = append(args, criteria.Title)
+	}
+
+	if criteria.Path != "" {
+		conditions = append(conditions, " path = ?")
+		args = append(args, criteria.Path)
+
+	}
+
+	if criteria.CreatedDate != "" {
+		conditions = append(conditions, "CreatedDate = ?")
+		args = append(args, criteria.CreatedDate)
+	}
+
+	if criteria.Keyword != "" {
+		conditions = append(conditions, "keyword = ?")
+		args = append(args, criteria.Keyword)
+	}
+
+	if len(conditions) == 0 {
+		return fmt.Errorf("no search criteria provided")
+	}
+
+	for _, doc := range searchResult {
+
+		queryArgs := make([]interface{}, len(args)+1)
+		copy(queryArgs, args)
+		queryArgs[len(args)] = doc.Id
+
+		query := fmt.Sprintf("UPDATE documents SET %s WHERE id = ? ", strings.Join(conditions, " , "))
+		if doc.Path != "" && criteria.Path != "" {
+			if err := MoveNotes(doc.Path, criteria.Path); err != nil {
+				return fmt.Errorf("Could not move notes: %w", err)
+			}
+		}
+
+		_, err := db.DB.Exec(query, queryArgs...)
+		if err != nil {
+			return fmt.Errorf("could not execute search query: %w", err)
+		}
+
+	}
+
+	return nil
+}
+
+// TODO: make these
+func SearchUsersTable() {}
+func UpdateUsersTable() {}
 
 func (db *Database) InsertUser(user *User) error {
 

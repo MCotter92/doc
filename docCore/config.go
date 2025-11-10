@@ -9,13 +9,15 @@ import (
 )
 
 type ConfigUpdateRequest struct {
-	Editor        string
 	UserName      string
 	NotesLocation string
+	Editor        string
+	ConfigPath    string
 }
 
-// TODO: make sure that the database is being upated as well!! That is not happening yet!!
-func UpdateUserConfigFile(req ConfigUpdateRequest) error {
+// updates both users table and config file
+func UpdateUserConfiguration(req ConfigUpdateRequest) error {
+
 	user, err := utils.GetUserConfig()
 	if err != nil {
 		return fmt.Errorf("Faild to get user config: %w", err)
@@ -24,9 +26,19 @@ func UpdateUserConfigFile(req ConfigUpdateRequest) error {
 	fmt.Println("Updating user config...")
 	var updated bool
 
+	if req.UserName != "" {
+		oldUserName := user.UserName
+		if err = user.UpdateConfigFile("UserName", req.UserName); err != nil {
+			return fmt.Errorf("Failed to update notes location: %w", err)
+		}
+
+		fmt.Printf("Notes location updated: %s -> %s\n", oldUserName, req.UserName)
+
+	}
+
 	if req.Editor != "" {
 		oldEditor := user.Editor
-		if err = user.UpdateConfig("editor", req.Editor); err != nil {
+		if err = user.UpdateConfigFile("editor", req.Editor); err != nil {
 			return fmt.Errorf("Failed to update editor: %w", err)
 		}
 
@@ -57,7 +69,7 @@ func UpdateUserConfigFile(req ConfigUpdateRequest) error {
 
 }
 
-func UpdateUserTable(req ConfigUpdateRequest) error {}
+// func UpdateUserTable(req ConfigUpdateRequest) error {}
 
 func ShowUserConfig(showDetailed bool) error {
 	user, err := utils.GetUserConfig()
@@ -121,7 +133,7 @@ func handleNotesLocationUpdate(user *utils.User, newLocation string) error {
 	}
 
 	// Update the configuration
-	if err := user.UpdateConfig("notesLocation", absPath); err != nil {
+	if err := user.UpdateConfigFile("notesLocation", absPath); err != nil {
 		return fmt.Errorf("Failed to update notes location: %w", err)
 	}
 

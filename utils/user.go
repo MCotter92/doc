@@ -48,50 +48,14 @@ func NewUser() (*User, error) {
 		return nil, fmt.Errorf("failed to set editor: %w", err)
 	}
 
-	if err := user.saveConfig(); err != nil {
+	if err := user.saveConfigFile(); err != nil {
 		return nil, fmt.Errorf("Failed to save config: %w", err)
 	}
 
 	return user, nil
 }
 
-func GetUserConfig() (*User, error) {
-	if err := setupViper(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			return nil, fmt.Errorf("config file not found - please run initializatin first.")
-		}
-		return nil, fmt.Errorf("cound not read config: %w", err)
-
-	}
-	var user User
-	if err := viper.Unmarshal(&user); err != nil {
-		return nil, fmt.Errorf("could not unmarshl config: %w", err)
-	}
-
-	return &user, nil
-}
-
-func setupViper() error {
-	viper.SetConfigName("userConfig")
-	viper.SetConfigType("yaml")
-
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return fmt.Errorf("Failed to get home directory: %w", err)
-	}
-
-	confgiDir := filepath.Join(homeDir, ".config", "doc")
-	viper.AddConfigPath(confgiDir)
-
-	viper.SetEnvPrefix("DOC")
-	viper.AutomaticEnv()
-
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-
-	return nil
-}
-
-func (u *User) saveConfig() error {
+func (u *User) saveConfigFile() error {
 	viper.Set("id", u.ID)
 	viper.Set("userName", u.UserName)
 	viper.Set("notesLocation", u.NotesLocation)
@@ -110,7 +74,7 @@ func (u *User) saveConfig() error {
 	return nil
 }
 
-func (u *User) UpdateConfig(key string, value interface{}) error {
+func (u *User) UpdateConfigFile(key string, value interface{}) error {
 	viper.Set(key, value)
 
 	switch key {
@@ -122,7 +86,7 @@ func (u *User) UpdateConfig(key string, value interface{}) error {
 		u.NotesLocation = fmt.Sprintf("%v", value)
 	}
 
-	return u.saveConfig()
+	return u.saveConfigFile()
 }
 
 func (u *User) Validate() error {
@@ -143,17 +107,6 @@ func (u *User) Validate() error {
 	}
 
 	return nil
-}
-
-func ConfigExists() bool {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return false
-	}
-
-	configPath := filepath.Join(homeDir, ".config", "doc", "userConfig.yaml")
-	_, err = os.Stat(configPath)
-	return err == nil
 }
 
 func (u *User) setUserID() {
@@ -201,6 +154,53 @@ func (u *User) promptEditor() error {
 		u.Editor = input
 	}
 	return nil
+}
+
+func GetUserConfig() (*User, error) {
+	if err := setupViper(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			return nil, fmt.Errorf("config file not found - please run initializatin first.")
+		}
+		return nil, fmt.Errorf("cound not read config: %w", err)
+
+	}
+	var user User
+	if err := viper.Unmarshal(&user); err != nil {
+		return nil, fmt.Errorf("could not unmarshl config: %w", err)
+	}
+
+	return &user, nil
+}
+
+func setupViper() error {
+	viper.SetConfigName("userConfig")
+	viper.SetConfigType("yaml")
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("Failed to get home directory: %w", err)
+	}
+
+	confgiDir := filepath.Join(homeDir, ".config", "doc")
+	viper.AddConfigPath(confgiDir)
+
+	viper.SetEnvPrefix("DOC")
+	viper.AutomaticEnv()
+
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	return nil
+}
+
+func ConfigExists() bool {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return false
+	}
+
+	configPath := filepath.Join(homeDir, ".config", "doc", "userConfig.yaml")
+	_, err = os.Stat(configPath)
+	return err == nil
 }
 
 func readInput() (string, error) {
