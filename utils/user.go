@@ -12,12 +12,14 @@ import (
 )
 
 type User struct {
-	ID            string `mapstructure:"id" yaml:"id"`
-	UserName      string `mapstructure:"userName" yaml:"userName"`
-	NotesLocation string `mapstructure:"notesLocation" yaml:"notesLocation"`
-	Editor        string `mapstructure:"editor" yaml:"editor"`
-	ConfigPath    string `mapstructure:"configPath" yaml:"configPath"`
+	ID            uuid.UUID `mapstructure:"id" yaml:"id"`
+	UserName      string    `mapstructure:"userName" yaml:"userName"`
+	NotesLocation string    `mapstructure:"notesLocation" yaml:"notesLocation"`
+	Editor        string    `mapstructure:"editor" yaml:"editor"`
+	ConfigPath    string    `mapstructure:"configPath" yaml:"configPath"`
 }
+
+var getUserHomeDir = os.UserHomeDir
 
 func NewUser() (*User, error) {
 	user := &User{}
@@ -110,11 +112,11 @@ func (u *User) Validate() error {
 }
 
 func (u *User) setUserID() {
-	u.ID = uuid.New().String()
+	u.ID = uuid.New()
 }
 
 func (u *User) setDefaultConfigPath() error {
-	homeDir, err := os.UserHomeDir()
+	homeDir, err := getUserHomeDir()
 	if err != nil {
 		return fmt.Errorf("failed to set config path: %w", err)
 	}
@@ -176,7 +178,7 @@ func setupViper() error {
 	viper.SetConfigName("userConfig")
 	viper.SetConfigType("yaml")
 
-	homeDir, err := os.UserHomeDir()
+	homeDir, err := getUserHomeDir()
 	if err != nil {
 		return fmt.Errorf("Failed to get home directory: %w", err)
 	}
@@ -193,7 +195,7 @@ func setupViper() error {
 }
 
 func ConfigExists() bool {
-	homeDir, err := os.UserHomeDir()
+	homeDir, err := getUserHomeDir()
 	if err != nil {
 		return false
 	}

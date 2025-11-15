@@ -61,15 +61,13 @@ func UpdateUserConfiguration(req ConfigUpdateRequest) error {
 		}
 
 		fmt.Println("\nUpdated Configuragion!")
-		// call UpdateUserTable() here?
+		// TODO: call UpdateUserTable() here?
 		return ShowUserConfig(false)
 	}
 
 	return nil
 
 }
-
-// func UpdateUserTable(req ConfigUpdateRequest) error {}
 
 func ShowUserConfig(showDetailed bool) error {
 	user, err := utils.GetUserConfig()

@@ -19,7 +19,7 @@ type Database struct {
 
 // TODO: make these fields in both structs pointers and update funcs accordingly
 //
-//	type SearchCriteria struct {
+//	type DocumentSearchCriteria struct {
 //		Id          *uuid.UUID
 //		UserID      *uuid.UUID
 //		Directory   *string
@@ -28,7 +28,7 @@ type Database struct {
 //		CreatedDate *time.Time
 //		Keyword     *string
 //	}
-type SearchCriteria struct {
+type DocumentSearchCriteria struct {
 	Id          string
 	UserID      string
 	Directory   string
@@ -36,6 +36,12 @@ type SearchCriteria struct {
 	Path        string
 	CreatedDate string
 	Keyword     string
+}
+type UserSearchCriteria struct {
+	Id            string
+	UserName      string
+	Editor        string
+	NotesLocation string
 }
 
 //	type UpdateNoteCriteria struct {
@@ -59,7 +65,7 @@ type UpdateNoteCriteria struct {
 
 // TODO: This currently updates one note at a time. Obviously want to change this.
 
-func (db *Database) SearchDocumentsTable(criteria SearchCriteria) ([]Doc, error) {
+func (db *Database) SearchDocumentsTable(criteria DocumentSearchCriteria) ([]Doc, error) {
 
 	var conditions []string
 	var args []interface{}
@@ -202,7 +208,58 @@ func (db *Database) UpdateDocumentsTable(searchResult []Doc, criteria UpdateNote
 }
 
 // TODO: make these
-func SearchUsersTable() {}
+func (db *Database) SearchUsersTable(criteria UserSearchCriteria) ([]User, error) {
+	var conditions []string
+	var args []interface{}
+
+	if criteria.Id != "" {
+		conditions = append(conditions, "id = ?")
+		args = append(args, criteria.Id)
+	}
+
+	if criteria.UserName != "" {
+		conditions = append(conditions, "name = ?")
+		args = append(args, criteria.UserName)
+	}
+
+	if criteria.NotesLocation != "" {
+		conditions = append(conditions, "notesLocation = ?")
+		args = append(args, criteria.NotesLocation)
+	}
+
+	if criteria.Editor != "" {
+		conditions = append(conditions, "editor = ?")
+		args = append(args, criteria.Editor)
+	}
+
+	if len(conditions) == 0 {
+		return nil, fmt.Errorf("no search criteria provided")
+	}
+
+	query := fmt.Sprintf("SELECT id, name, notesLocation, editor FROM users WHERE %s", strings.Join(conditions, " AND "))
+
+	rows, err := db.DB.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("could not execute search query: %w", err)
+	}
+	defer rows.Close()
+
+	var users []User
+	for rows.Next() {
+		var user User
+		var idStr string
+		err := rows.Scan(&idStr, &user.UserName, &user.NotesLocation, &user.Editor)
+		if err != nil {
+			return nil, fmt.Errorf("Could not scan row: %w", err)
+		}
+		user.ID, err = uuid.Parse(idStr)
+		if err != nil {
+			return nil, fmt.Errorf("Invalid UUID for id: %w", err)
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
 func UpdateUsersTable() {}
 
 func (db *Database) InsertUser(user *User) error {

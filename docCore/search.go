@@ -8,7 +8,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func Search(searchCriteria utils.SearchCriteria) ([]utils.Doc, *utils.Database, error) {
+func Search(searchCriteria utils.DocumentSearchCriteria) ([]utils.Doc, *utils.Database, error) {
 
 	db, err := utils.NewDatabase()
 	if err != nil {
