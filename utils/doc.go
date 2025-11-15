@@ -46,9 +46,15 @@ func CreateDocFile(title, keyword string) error {
 		return fmt.Errorf("Could not create note: %w", err)
 	}
 
+	fmt.Fprintf(os.Stderr, "title: ", title)
+
 	frontmatter := SetFrontmatter(doc)
 
-	err = os.WriteFile(doc.Title, []byte(frontmatter), 0644)
+	pwd, _ := os.Getwd()
+	fmt.Fprintf(os.Stderr, "pwd: %s\n", pwd)
+	fmt.Fprintf(os.Stderr, "writing %s\n", doc.Title)
+
+	err = os.WriteFile(doc.Path, []byte(frontmatter), 0644)
 	if err != nil {
 		return fmt.Errorf("Could not write to config file: %w", err)
 	}

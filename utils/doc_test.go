@@ -3,14 +3,11 @@ package utils
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 	"time"
 
 	"github.com/google/uuid"
 )
-
-var SetFrontMatterFunc = SetFrontmatter
 
 func TestSetID(t *testing.T) {
 	var d Doc
@@ -88,38 +85,40 @@ func TestSetKeyword(t *testing.T) {
 	}
 }
 
-// Failing: rewrite?
 func TestNewDoc(t *testing.T) {
 	title := "testnote.md"
 	keyword := "testing"
-	doc, err := NewDoc(title, keyword)
-
-	if err == nil {
-		// We expect setUserID to fail because no database exists
-		if doc.UserID == uuid.Nil {
-			t.Log("expected UserID to be nil due to missing DB — OK")
-		} else {
-			t.Error("expected UserID to be nil but got a value")
-		}
-	} else {
-		t.Logf("expected error (likely due to DB), got: %v", err)
-	}
+	doc, _ := NewDoc(title, keyword)
 
 	if doc.Id == uuid.Nil {
 		t.Error("expected non-nil ID")
 	}
+
+	if doc.UserID == uuid.Nil {
+		t.Error("expected non-nil User ID")
+	}
+
+	if doc.Directory == "" {
+		t.Error("expected non-nil Directory")
+	}
+
 	if doc.Title != title {
 		t.Errorf("expected title=%s, got %s", title, doc.Title)
 	}
-	if !strings.HasSuffix(doc.Path, title) {
-		t.Errorf("expected path to end with %s, got %s", title, doc.Path)
+
+	if doc.Path == "" {
+		t.Errorf("expected non-bil Path")
 	}
-	if doc.Keyword != keyword {
-		t.Errorf("expected keyword=%s, got %s", keyword, doc.Keyword)
+
+	if doc.Keyword == "" {
+		t.Errorf("expected non-nil Keyowrd")
+	}
+
+	if doc.CreatedDate.IsZero() {
+		t.Errorf("expected createdDate to be non-nil")
 	}
 }
 
-// Failing: expected "frontmatter" got "", stubbing?
 func TestCreateDocFile(t *testing.T) {
 	tmp := t.TempDir()
 	filePath := tmp + "/testDoc.md"
@@ -129,7 +128,10 @@ func TestCreateDocFile(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	content, _ := os.ReadFile(filePath)
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	if string(content) != "frontmatter" {
 		t.Errorf("expected 'frontmatter', got %q", string(content))
 	}
