@@ -47,11 +47,11 @@ var deleteCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(deleteCmd)
-	deleteCmd.Flags().StringVarP(&idFlag, "Id", "id", "", "Search by doc id.")
-	deleteCmd.Flags().StringVarP(&userIdFlag, "userId", "uid", "", "Search by doc user id.")
+	deleteCmd.Flags().StringVarP(&idFlag, "Id", "i", "", "Search by doc id.")
+	deleteCmd.Flags().StringVarP(&userIdFlag, "userId", "u", "", "Search by doc user id.")
 	deleteCmd.Flags().StringVarP(&directoryFlag, "directory", "d", "", "Search by a doc's directory.")
 	deleteCmd.Flags().StringVarP(&titleFlag, "title", "t", "", "Search by a doc's title.")
-	deleteCmd.Flags().StringVarP(&pathFlag, "path", "f", "", "Search by a doc's full path.")
-	deleteCmd.Flags().StringVarP(&createdDateFlag, "created", "c", "", "Search by created date")
-	deleteCmd.Flags().StringVarP(&keywordFlag, "keyword", "k", "", "Search by keyword")
+	deleteCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Search by a doc's full path.")
+	deleteCmd.Flags().StringVarP(&createdDateFlag, "created", "c", "", "Search by created date.")
+	deleteCmd.Flags().StringVarP(&keywordFlag, "keyword", "k", "", "Search by keyword.")
 }

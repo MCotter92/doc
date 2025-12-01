@@ -59,8 +59,11 @@ func TestSetDirectory(t *testing.T) {
 
 func TestSetPath(t *testing.T) {
 	var d Doc
+	user, _ := GetUserConfig()
+	notesLocation := user.NotesLocation
+
 	d.setPath("/tmp/notes", "note.md")
-	expected := filepath.Join("/tmp/notes", "note.md")
+	expected := filepath.Join(notesLocation, "/tmp/notes", "note.md")
 	if d.Path != expected {
 		t.Errorf("expected %q, got %q", expected, d.Path)
 	}

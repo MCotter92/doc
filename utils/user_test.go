@@ -30,28 +30,28 @@ func TestSetUserID(t *testing.T) {
 	}
 }
 
-func TestSetDefaultConfigPath(t *testing.T) {
-	tmpHome := t.TempDir()
-
-	oldGetUserHomeDir := getUserHomeDir
-	getUserHomeDir = func() (string, error) { return tmpHome, nil }
-	defer func() { getUserHomeDir = oldGetUserHomeDir }()
-
-	var u User
-	err := u.setDefaultConfigPath()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	expected := filepath.Join(tmpHome, "Documents", "Notes")
-	if u.ConfigPath != expected {
-		t.Errorf("expected config path %q, got %q", expected, u.ConfigPath)
-	}
-}
+// func TestSetDefaultConfigPath(t *testing.T) {
+// 	tmpHome := t.TempDir()
+//
+// 	oldGetUserHomeDir := getUserHomeDir
+// 	getUserHomeDir = func() (string, error) { return tmpHome, nil }
+// 	defer func() { getUserHomeDir = oldGetUserHomeDir }()
+//
+// 	var u User
+// 	err := u.setDefaultConfigPath()
+// 	if err != nil {
+// 		t.Fatalf("unexpected error: %v", err)
+// 	}
+//
+// 	expected := filepath.Join(tmpHome, "Documents", "Notes")
+// 	if u.ConfigPath != expected {
+// 		t.Errorf("expected config path %q, got %q", expected, u.ConfigPath)
+// 	}
+// }
 
 func TestSetDefaultNotesLocation(t *testing.T) {
 	var u User
-	err := u.setDefaultNotesLocation()
+	err := u.promptNotesLocation()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

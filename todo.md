@@ -31,14 +31,15 @@ A CLI for organizing your documents.
 - [x] create 
 - [x] open - search then open
 - [x] delete - search then update 
+- [x] make sure that UpdateCriteria and SearchCriteria structs match up with Doc struct in field naming. 
+- [x] make sure cli flags match up with Doc struct.
+    - do I need directory in doc struct? 
+- [x] make sure doc init is working
+- [x] make a doc restet command for easier feedback loop 
 
 ## Now
 **Make it work, then make it good.**
 
-- [x] make sure that UpdateCriteria and SearchCriteria structs match up with Doc struct in field naming. 
-- [x] make sure cli flags match up with Doc struct.
-    - do I need directory in doc struct? 
-- [] get some test coverage going 
 - [] update 
     - update a note: 
         - update db
@@ -65,8 +66,11 @@ A CLI for organizing your documents.
             - [] updateUserConfig 
         - maybe if there are no flags, then show a table output where users can find what they want. or if the user provies
         the full path, then they can say -k=newKeyword to update the keyword.
-
+- [] use GetUserConfig() from users.go and pass result to all functions that need Notes Location 
+    - [] doc create needs Notes Location to put files in the right place. 
+        - if user fat fingers the wrong path under Notes Location, ask the user if they want doc to create it.
 ## Next 
+- [] get some test coverage going 
 - [] make SearchCriteria, UpdateCriteria full of pointers and update funcs accordingly 
 - [] doc sync
     - probably search then update en masse? 

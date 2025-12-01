@@ -21,6 +21,7 @@ type Doc struct {
 }
 
 func NewDoc(title, keyword string) (*Doc, error) {
+
 	doc := &Doc{}
 
 	doc.setID()
@@ -46,35 +47,36 @@ func CreateDocFile(title, keyword string) error {
 		return fmt.Errorf("Could not create note: %w", err)
 	}
 
-	fmt.Fprintf(os.Stderr, "title: ", title)
-
 	frontmatter := SetFrontmatter(doc)
-
-	pwd, _ := os.Getwd()
-	fmt.Fprintf(os.Stderr, "pwd: %s\n", pwd)
-	fmt.Fprintf(os.Stderr, "writing %s\n", doc.Title)
 
 	err = os.WriteFile(doc.Path, []byte(frontmatter), 0644)
 	if err != nil {
-		return fmt.Errorf("Could not write to config file: %w", err)
+		return fmt.Errorf("Could not write to new doc file: %w", err)
 	}
 
 	return nil
 }
 
-func (n *Doc) setPath(title, directory string) {
-	n.Path = filepath.Join(title, directory)
+// setPath() always appends the provided directory and title to the notes location the user defined upon setup.
+// ex: setPath(math, slope.md) yields path/to/notes/location/math/slope.md
+func (doc *Doc) setPath(directory, title string) {
+	user, err := GetUserConfig()
+	if err != nil {
+		fmt.Printf("Could not get user config: %s", err)
+	}
+	notesLocation := user.NotesLocation
+	doc.Path = filepath.Join(notesLocation, directory, title)
 }
 
-func (n *Doc) setID() {
-	n.Id = uuid.New()
+func (doc *Doc) setID() {
+	doc.Id = uuid.New()
 }
 
-func (n *Doc) GetID() uuid.UUID {
-	return n.Id
+func (doc *Doc) GetID() uuid.UUID {
+	return doc.Id
 }
 
-func (n *Doc) setUserID() error {
+func (doc *Doc) setUserID() error {
 	homeDir, _ := os.UserHomeDir()
 	dbPath := filepath.Join(homeDir, ".config/doc/doc.db")
 
@@ -93,17 +95,17 @@ func (n *Doc) setUserID() error {
 		return err
 	}
 
-	n.UserID = parsedUUID
+	doc.UserID = parsedUUID
 	return nil
 
 }
 
-func (n *Doc) setTitle(fileName string) error {
-	n.Title = filepath.Base(fileName)
+func (doc *Doc) setTitle(fileName string) error {
+	doc.Title = filepath.Base(fileName)
 	return nil
 }
 
-func (n *Doc) setDirectory(fileName string) error {
+func (doc *Doc) setDirectory(fileName string) error {
 	dir := filepath.Dir(fileName)
 	if dir == "." {
 		_loc, err := os.Getwd()
@@ -112,14 +114,14 @@ func (n *Doc) setDirectory(fileName string) error {
 		}
 		dir = _loc
 	}
-	n.Directory = dir
+	doc.Directory = dir
 	return nil
 }
 
-func (n *Doc) setCreatedDate() {
-	n.CreatedDate = time.Now()
+func (doc *Doc) setCreatedDate() {
+	doc.CreatedDate = time.Now()
 }
 
-func (n *Doc) setKeyword(keyword string) {
-	n.Keyword = keyword
+func (doc *Doc) setKeyword(keyword string) {
+	doc.Keyword = keyword
 }

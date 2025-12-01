@@ -7,6 +7,7 @@ import (
 )
 
 func CreateDoc(title, keyword string, db *utils.Database) error {
+
 	doc, err := utils.NewDoc(title, keyword)
 	if err != nil {
 		fmt.Printf("Could not create note struct: %s", err)

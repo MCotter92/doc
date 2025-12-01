@@ -58,8 +58,8 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(openCmd)
 
-	openCmd.Flags().StringVarP(&idFlag, "Id", "id", "", "Search by doc id.")
-	openCmd.Flags().StringVarP(&userIdFlag, "userId", "uid", "", "Search by doc user id.")
+	openCmd.Flags().StringVarP(&idFlag, "Id", "i", "", "Search by doc id.")
+	openCmd.Flags().StringVarP(&userIdFlag, "userId", "u", "", "Search by doc user id.")
 	openCmd.Flags().StringVarP(&directoryFlag, "directory", "d", "", "Search by a doc's directory.")
 	openCmd.Flags().StringVarP(&titleFlag, "title", "t", "", "Search by a doc's title.")
 	openCmd.Flags().StringVarP(&pathFlag, "path", "f", "", "Search by a doc's full path.")

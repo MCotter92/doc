@@ -3,6 +3,7 @@ package docCore
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/MCotter92/doc/utils"
 	_ "github.com/mattn/go-sqlite3"
@@ -16,19 +17,22 @@ func DocInit() error {
 		fmt.Printf("Could not create new user: %s", err)
 		return err
 	}
+
 	data, err := yaml.Marshal(user)
 	if err != nil {
 		fmt.Printf("Could not marshal config to YAML: %s", err)
 		return err
 	}
 
-	err = os.WriteFile(user.ConfigPath, data, 0644)
+	configFile := filepath.Join(user.ConfigPath, "userConfig.yaml")
+
+	err = os.WriteFile(configFile, data, 0644)
 	if err != nil {
 		fmt.Printf("Could not write to config file: %s", err)
 		return err
 	}
 
-	contents, err := os.ReadFile(user.ConfigPath)
+	contents, err := os.ReadFile(configFile)
 	if err != nil {
 		fmt.Printf("Could not read config file: %s", err)
 		return err

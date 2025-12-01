@@ -33,7 +33,7 @@ to quickly create a Cobra application.`,
 		}
 		err = docCore.CreateDoc(path, keyword, db)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("could not create note: %w", err)
 		}
 	},
 }
@@ -41,6 +41,6 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(createCmd)
 
-	createCmd.Flags().StringVarP(&path, "path", "p", "", "Path for a new note.")
+	createCmd.Flags().StringVarP(&path, "path", "p", "", "Path to the new note.")
 	createCmd.Flags().StringVarP(&keyword, "keyword", "k", "", "Keyword for a new note.")
 }
