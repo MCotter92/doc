@@ -40,6 +40,7 @@ A CLI for organizing your documents.
 ## Now
 **Make it work, then make it good.**
 
+- [] in doc struct, replace configPath with dbPath and configFilePath
 - [] update 
     - update a note: 
         - update db

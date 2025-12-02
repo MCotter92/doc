@@ -11,14 +11,16 @@ import (
 )
 
 type User struct {
-	ID            uuid.UUID `mapstructure:"id" yaml:"id"`
-	UserName      string    `mapstructure:"userName" yaml:"userName"`
-	NotesLocation string    `mapstructure:"notesLocation" yaml:"notesLocation"`
-	Editor        string    `mapstructure:"editor" yaml:"editor"`
-	ConfigPath    string    `mapstructure:"configPath" yaml:"configPath"`
+	ID             uuid.UUID `mapstructure:"id" yaml:"id"`
+	UserName       string    `mapstructure:"userName" yaml:"userName"`
+	NotesLocation  string    `mapstructure:"notesLocation" yaml:"notesLocation"`
+	Editor         string    `mapstructure:"editor" yaml:"editor"`
+	ConfigDir      string    `mapstructure:"editor" yaml:"ConfigDir"`
+	ConfigFilePath string    `mapstructure:"configPath" yaml:"configFilePath"`
+	DbPath         string    `mapstructure:"configPath" yaml:"dbPath"`
 }
 
-// Top level function for user creation.
+// Top level function for user creation. Fills out the user's struct.
 func NewUser() (*User, error) {
 	user := &User{}
 
@@ -26,10 +28,19 @@ func NewUser() (*User, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to set config path: %w", err)
 	}
-	configPath := filepath.Join(homeDir, ".config", "doc")
-	user.ConfigPath = configPath
 
-	viper.SetDefault("configPath", configPath)
+	configDir := filepath.Join(homeDir, ".config", "doc")
+	user.ConfigDir = configDir
+
+	configFilePath := filepath.Join(homeDir, ".config", "doc", "configFile.yaml")
+	user.ConfigFilePath = configFilePath
+
+	dbPath := filepath.Join(homeDir, ".config", "doc", "db.sql")
+	user.DbPath = dbPath
+
+	viper.SetDefault("ConfigDir", configDir)
+	viper.SetDefault("dbPath", dbPath)
+	viper.SetDefault("configFilePath", configFilePath)
 	viper.SetDefault("editor", "nvim")
 
 	if err := setupViper(); err != nil {
@@ -48,7 +59,7 @@ func NewUser() (*User, error) {
 		return nil, fmt.Errorf("failed to set editor: %w", err)
 	}
 
-	if err := user.makeConfigLocation(configPath); err != nil {
+	if err := user.makeConfigLocation(user.ConfigDir, user.ConfigFilePath); err != nil {
 		return nil, fmt.Errorf("Failed to make config location: %w", err)
 	}
 
@@ -64,10 +75,11 @@ func (u *User) saveConfigFile() error {
 	viper.Set("userName", u.UserName)
 	viper.Set("notesLocation", u.NotesLocation)
 	viper.Set("editor", u.Editor)
-	viper.Set("configPath", u.ConfigPath)
+	viper.Set("configDir", u.ConfigDir)
+	viper.Set("configFilePath", u.ConfigFilePath)
+	viper.Set("dbPath", u.DbPath)
 
-	configFile := filepath.Join(u.ConfigPath, "userConfig.yaml")
-	if err := viper.WriteConfigAs(configFile); err != nil {
+	if err := viper.WriteConfigAs(u.ConfigFilePath); err != nil {
 		return fmt.Errorf("Could not write to config file: %w", err)
 	}
 
@@ -147,14 +159,13 @@ func (u *User) makeNotesLocation() error {
 
 }
 
-func (u *User) makeConfigLocation(configPath string) error {
+func (u *User) makeConfigLocation(configDir, configFilePath string) error {
 
-	if err := os.Mkdir(configPath, 0755); err != nil {
-		return fmt.Errorf("Failed to make config directory: %w", err)
+	if err := os.MkdirAll(configDir, 0775); err != nil {
+		return fmt.Errorf("Failed to create config dir: %w", err)
 	}
 
-	configFile := filepath.Join(configPath, "userConfig.yaml")
-	if _, err := os.Create(configFile); err != nil {
+	if _, err := os.Create(configFilePath); err != nil {
 		return fmt.Errorf("Failed to create config file: %w", err)
 	}
 

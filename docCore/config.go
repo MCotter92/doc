@@ -84,7 +84,7 @@ func ShowUserConfig(showDetailed bool) error {
 	fmt.Println("==========================================")
 
 	if showDetailed {
-		fmt.Printf("Config Path:       %s\n", user.ConfigPath)
+		fmt.Printf("Config Path:       %s\n", user.ConfigFilePath)
 	}
 
 	if noteCount := utils.CountNotesInLocation(user.NotesLocation); noteCount >= 0 {

@@ -3,7 +3,6 @@ package docCore
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/MCotter92/doc/utils"
 	_ "github.com/mattn/go-sqlite3"
@@ -24,21 +23,19 @@ func DocInit() error {
 		return err
 	}
 
-	configFile := filepath.Join(user.ConfigPath, "userConfig.yaml")
-
-	err = os.WriteFile(configFile, data, 0644)
+	err = os.WriteFile(user.ConfigFilePath, data, 0644)
 	if err != nil {
 		fmt.Printf("Could not write to config file: %s", err)
 		return err
 	}
 
-	contents, err := os.ReadFile(configFile)
+	contents, err := os.ReadFile(user.ConfigFilePath)
 	if err != nil {
 		fmt.Printf("Could not read config file: %s", err)
 		return err
 	}
 
-	fmt.Println("Configuration file created at ", user.ConfigPath, ".")
+	fmt.Println("Configuration file created at ", user.ConfigFilePath, ".")
 	fmt.Println("========================================")
 	fmt.Println("Config:")
 	fmt.Println(string(contents))
@@ -55,11 +52,7 @@ func DocInit() error {
 		return err
 	}
 
-	db, err := utils.NewDatabase()
-	if err != nil {
-		return err
-	}
-	err = db.InsertUser(user)
+	err = database.InsertUser(user)
 	if err != nil {
 		return err
 	}

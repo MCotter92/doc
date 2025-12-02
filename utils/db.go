@@ -265,10 +265,10 @@ func UpdateUsersTable() {}
 func (db *Database) InsertUser(user *User) error {
 
 	insert :=
-		`INSERT INTO users (id, name, notesLocation, editor, configPath) 
-	VALUES(?, ?, ?, ?, ?)`
+		`INSERT INTO users (id, name, notesLocation, editor, configDir, configFilePath, dbPath) 
+	VALUES(?, ?, ?, ?, ?, ?, ?)`
 
-	_, err := db.DB.Exec(insert, user.ID, user.UserName, user.NotesLocation, user.Editor, user.ConfigPath)
+	_, err := db.DB.Exec(insert, user.ID, user.UserName, user.NotesLocation, user.Editor, user.ConfigDir, user.ConfigFilePath, user.DbPath)
 	if err != nil {
 		return fmt.Errorf("Failed to insert user: %w", err)
 	}
@@ -390,11 +390,14 @@ func (db *Database) CreateTables() error {
 func (db *Database) createUsersTable() error {
 	query := `
 	 CREATE TABLE IF NOT EXISTS users (
-		 id TEXT PRIMARY KEY, -- UUID as TEXT
+		 id TEXT PRIMARY KEY, 
 		 name TEXT NOT NULL,
 		 notesLocation TEXT NOT NULL,
-		 editor TExT NOT NULL,
-		 configPath TEXT NOT NULL
+		 editor TEXT NOT NULL,
+		 configDir TEXT NOT NULL,
+		 configFilePath TEXT NOT NULL,
+		 configDB TEXT NOT NULL
+
 	 );
 	`
 	_, err := db.DB.Exec(query)
